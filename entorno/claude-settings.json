@@ -1,7 +1,10 @@
 {
   "language": "Español",
   "model": "opus",
-  "attribution": { "commit": "", "pr": "" },
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
   "includeCoAuthoredBy": false,
   "autoUpdatesChannel": "latest",
   "tui": "fullscreen",
@@ -11,8 +14,18 @@
     "command": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"~/.claude/statusline.ps1\""
   },
   "extraKnownMarketplaces": {
-    "caveman": { "source": { "source": "github", "repo": "JuliusBrussee/caveman" } },
-    "ponytail": { "source": { "source": "github", "repo": "DietrichGebert/ponytail" } }
+    "caveman": {
+      "source": {
+        "source": "github",
+        "repo": "JuliusBrussee/caveman"
+      }
+    },
+    "ponytail": {
+      "source": {
+        "source": "github",
+        "repo": "DietrichGebert/ponytail"
+      }
+    }
   },
   "enabledPlugins": {
     "superpowers@claude-plugins-official": true,
@@ -22,5 +35,18 @@
     "pr-review-toolkit@claude-plugins-official": true,
     "commit-commands@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/skills/engineering-work-guide/entorno/hooks/titulo-sesion.mjs\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
   }
 }

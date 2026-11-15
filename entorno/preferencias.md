@@ -73,6 +73,14 @@ Sin abstracciones de un solo uso, sin andamiaje "para luego", diff mínimo, borr
 - Comandos antes que interfaz gráfica. En Windows, `winget` primero para instalar.
 - Si algo tarda de más, avisar y cambiar de método.
 
+## Repartir trabajo por modelo
+
+Para gastar menos límite de uso, si el agente permite elegir modelo por subagente:
+- Trabajo mecánico y voluminoso con entrada y salida claras (resumir un PDF o un log largo, traducir, extraer datos, rastrear muchos ficheros): subagente con el modelo pequeño (Haiku).
+- Análisis largo de lectura (revisar un módulo, estudiar documentación): subagente con el modelo intermedio (Sonnet).
+- El modelo principal decide, escribe el código y revisa lo que devuelven antes de usarlo.
+- No delegues preguntas cortas ni tareas en las que importa el contexto ya cargado: el subagente arranca en frío y sale más caro.
+
 ## Herramientas, si están instaladas
 
 - **Grafo de código (codegraph MCP):** para preguntas estructurales (dónde se define, quién llama, qué rompe un cambio) úsalo antes que grep. Grep solo para texto literal. Si el proyecto no tiene `.codegraph/`, pregunta si se inicializa con `codegraph init -i`.

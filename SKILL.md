@@ -1,6 +1,6 @@
 ---
 name: engineering-work-guide
-description: Use when working on any task inside a code repository, before reading or editing files: implementing or refactoring code, fixing bugs or failing tests, improving performance, changing schemas or migrating tables, building data pipelines, SQL or analytics, evaluating prompts, models or LLM/RAG systems, reviewing diffs, or deleting files and data. Also when the user asks to set up or replicate their agent environment on a new machine (install my skills, plugins, settings, preferences). Not for general knowledge questions, translations, jokes or explaining a single concept.
+description: Use when working on any task inside a code repository, before reading or editing files, such as implementing or refactoring code, fixing bugs or failing tests, improving performance, changing schemas or migrating tables, building data pipelines, SQL or analytics, evaluating prompts, models or LLM/RAG systems, reviewing diffs, or deleting files and data. Also when the user asks to set up or replicate their agent environment on a new machine (install my skills, plugins, settings, preferences). Not for general knowledge questions, translations, jokes or explaining a single concept.
 ---
 
 # Guía de trabajo de ingeniería
