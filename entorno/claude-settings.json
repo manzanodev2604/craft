@@ -42,7 +42,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/skills/engineering-work-guide/entorno/hooks/titulo-sesion.mjs\"",
+            "command": "node \"$HOME/.claude/skills/craft/entorno/hooks/titulo-sesion.mjs\"",
             "timeout": 5
           }
         ]

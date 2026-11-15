@@ -9,7 +9,7 @@ Procedimiento para que el agente deje en otra máquina la misma configuración q
 | `preferencias.md` | Cómo trabaja y quiere que se le responda. Va al fichero de instrucciones de usuario del agente |
 | `claude-settings.json` | Ajustes de Claude Code que se fusionan con `~/.claude/settings.json` |
 | `statusline.ps1` | Línea de estado de Claude Code (necesita PowerShell 7, `pwsh`) |
-| `hooks/titulo-sesion.mjs` | Hook de Claude Code: si la sesión empieza solo con `/engineering-work-guide`, la titula con la carpeta y después con el objetivo, nunca con el nombre de la skill (necesita `node`; comprobación: `node titulo-sesion.mjs --test`) |
+| `hooks/titulo-sesion.mjs` | Hook de Claude Code: si la sesión empieza solo con `/craft`, la titula con la carpeta y después con el objetivo, nunca con el nombre de la skill (necesita `node`; comprobación: `node titulo-sesion.mjs --test`) |
 | `skills/cdp-browser/` | Skill propia de automatización del navegador real por CDP (Windows, Node 22+) |
 
 ## Paso 0. Antes de instalar nada
@@ -65,7 +65,7 @@ Opcional, solo si el trabajo usa Vercel: `claude plugin install vercel@claude-pl
 ## Paso 3. Ajustes (Claude Code)
 
 1. Fusiona `claude-settings.json` con `~/.claude/settings.json`: las claves del fichero ganan, las demás se conservan. No copies permisos ni modos que salten confirmaciones; en una máquina de empresa los decide el usuario.
-2. El hook de título ya va en `claude-settings.json` y apunta a la skill instalada en `~/.claude/skills/engineering-work-guide`; si la skill está en otra ruta, ajusta `hooks.UserPromptSubmit`.
+2. El hook de título ya va en `claude-settings.json` y apunta a la skill instalada en `~/.claude/skills/craft`; si la skill está en otra ruta, ajusta `hooks.UserPromptSubmit`.
 3. Copia `statusline.ps1` a `~/.claude/statusline.ps1` y pon en `statusLine.command` la **ruta absoluta** (Windows no expande `~` ahí). Sin `pwsh`, quita `statusLine`.
 
 ## Paso 4. Skills
@@ -80,7 +80,7 @@ npx skills add wshobson/agents --skill tailwind-design-system -g
 npx skills add vercel-labs/skills --skill find-skills -g
 ```
 
-Skill propia `cdp-browser` (solo Windows con Brave o Chrome): enlaza, no copies, para que `git pull` de esta skill la actualice también. PowerShell: `New-Item -ItemType Junction -Path "$HOME\.claude\skills\cdp-browser" -Target "$HOME\.claude\skills\engineering-work-guide\entorno\skills\cdp-browser"`. Usa la sesión real del navegador del usuario; en una máquina de empresa, pregunta antes si se instala.
+Skill propia `cdp-browser` (solo Windows con Brave o Chrome): enlaza, no copies, para que `git pull` de esta skill la actualice también. PowerShell: `New-Item -ItemType Junction -Path "$HOME\.claude\skills\cdp-browser" -Target "$HOME\.claude\skills\craft\entorno\skills\cdp-browser"`. Usa la sesión real del navegador del usuario; en una máquina de empresa, pregunta antes si se instala.
 
 No se llevan por defecto (personales, no de trabajo): skills de LinkedIn (`li-*`) y de SEO (`seo-*`). Solo si el usuario las pide.
 

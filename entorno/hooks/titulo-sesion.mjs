@@ -1,11 +1,11 @@
-// Hook UserPromptSubmit de Claude Code: si la sesión empieza solo con /engineering-work-guide,
+// Hook UserPromptSubmit de Claude Code: si la sesión empieza solo con /craft,
 // el título no sale de la skill sino de la carpeta y, en el siguiente mensaje, del objetivo.
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import assert from 'node:assert/strict';
 
-const SKILL = /^\/(?:[\w-]+:)?engineering-work-guide(?:\s+([\s\S]*))?$/;
+const SKILL = /^\/(?:[\w-]+:)?craft(?:\s+([\s\S]*))?$/;
 
 function resumen(texto) {
   const linea = texto.split('\n')
@@ -31,15 +31,15 @@ export function decidir(prompt, cwd, estado) {
 
 if (process.argv[2] === '--test') {
   const c = 'C:\\repos\\api-pagos';
-  let [t, e] = decidir('/engineering-work-guide', c, {});
+  let [t, e] = decidir('/craft', c, {});
   assert.ok(t === 'api-pagos' && e.pendiente, 'solo skill -> carpeta');
   [t, e] = decidir('Arregla el cálculo de IVA en facturas', c, e);
   assert.ok(t === 'Arregla el cálculo de IVA en facturas' && !e.pendiente, 'luego objetivo');
   [t] = decidir('otra cosa', c, e);
   assert.ok(t === null, 'no vuelve a renombrar');
-  [t] = decidir('/engineering-work-guide migrar tabla de pedidos', c, {});
+  [t] = decidir('/craft migrar tabla de pedidos', c, {});
   assert.ok(t === 'migrar tabla de pedidos', 'con argumentos -> argumentos');
-  [t] = decidir('/engineering-work-guide', c, { visto: true });
+  [t] = decidir('/craft', c, { visto: true });
   assert.ok(t === null, 'a mitad de sesión no toca el título');
   console.log('ok');
 } else {

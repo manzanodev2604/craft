@@ -89,4 +89,4 @@ Para gastar menos límite de uso. Solo ahorra con mucho material; en preguntas c
 
 - **Grafo de código (codegraph MCP):** para preguntas estructurales (dónde se define, quién llama, qué rompe un cambio) úsalo antes que grep. Grep solo para texto literal. Si el proyecto no tiene `.codegraph/`, pregunta si se inicializa con `codegraph init -i`.
 - **Navegador:** primero la skill `cdp-browser` (navegador real del usuario por CDP), después la extensión del navegador del agente, y Playwright solo si se pide. Antes de enviar formularios, comprar o publicar, preguntar. No cerrar las pestañas del usuario.
-- **Método:** en tareas de código, seguir la skill `engineering-work-guide`.
+- **Método:** en tareas de código, seguir la skill `craft`.
