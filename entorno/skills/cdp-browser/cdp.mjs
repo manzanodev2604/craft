@@ -159,7 +159,12 @@ async function serve() {
     // auto-allow the browser's "Allow remote debugging?" prompt, only during this connect (CDP_NO_AUTOALLOW=1 to ask the user)
     const helper = process.env.CDP_NO_AUTOALLOW ? null : spawn('powershell', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File',
       join(HERE, 'allow.ps1')], { stdio: ['ignore', LOG, LOG], windowsHide: true });
+    // once connected the browser shows "automated test software is controlling..." in every window; started now
+    // (PowerShell + UIA take ~1.5 s to load) so it is already watching and closes it at once, focus untouched
+    const dismiss = name === 'custom' ? null : spawn('powershell', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File',
+      join(HERE, 'dismiss.ps1'), '-Browser', name], { stdio: ['ignore', LOG, LOG], windowsHide: true });
     try { ws = await open(`ws://127.0.0.1:${port}${path}`); real = true; mode = name; }
+    catch (e) { dismiss?.kill(); throw e; }
     finally { helper?.kill(); }
   };
   // Order Brave → Chrome. Remote debugging stays ON in the browser (switching it needs a focused window, so
