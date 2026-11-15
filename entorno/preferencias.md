@@ -75,11 +75,15 @@ Sin abstracciones de un solo uso, sin andamiaje "para luego", diff mínimo, borr
 
 ## Repartir trabajo por modelo
 
-Para gastar menos límite de uso, si el agente permite elegir modelo por subagente:
-- Trabajo mecánico y voluminoso con entrada y salida claras (resumir un PDF o un log largo, traducir, extraer datos, rastrear muchos ficheros): subagente con el modelo pequeño (Haiku).
-- Análisis largo de lectura (revisar un módulo, estudiar documentación): subagente con el modelo intermedio (Sonnet).
-- El modelo principal decide, escribe el código y revisa lo que devuelven antes de usarlo.
-- No delegues preguntas cortas ni tareas en las que importa el contexto ya cargado: el subagente arranca en frío y sale más caro.
+Para gastar menos límite de uso. Solo ahorra con mucho material; en preguntas cortas, búsquedas de un dato o decisiones entre pocas opciones el ahorro es cero y no se delega.
+
+1. Decide sin abrir el material (leerlo ya es pagarlo al precio del modelo principal); como mucho, un `wc -w`.
+2. Más de ~5.000 palabras que hay que leer enteras (no basta con buscar unas líneas):
+   - Mecánico (resumir, traducir, sacar tablas o fichas, revisar contra una lista): subagente con el modelo pequeño (Haiku) y esfuerzo bajo. Trozos de 15.000 palabras como mucho por subagente, varios en paralelo si hay más.
+   - Con criterio (análisis extenso, riesgos, informe de varios documentos): subagente con el modelo intermedio (Sonnet) y esfuerzo medio; hasta ~60.000 palabras en uno solo.
+3. El encargo se entiende solo: objetivo en una frase, rutas absolutas, "lee cada archivo entero", qué devolver y cuánto como mucho, "si no lo encuentras, dilo; no inventes". Si el resultado es largo (una traducción, una tabla), que lo escriba en un archivo y devuelva la ruta y los totales.
+4. El modelo principal decide, aconseja y escribe el código. Comprueba en un solo paso, con 3 comprobaciones como mucho: las 2 o 3 citas o datos decisivos con grep en el original, el archivo escrito con `wc`, los totales con un script. Si algo no cuadra, rehace esa parte; no relee todo.
+5. Primera línea de la respuesta cuando se ha delegado, sin emojis: "Reparto: Haiku leyó X; Opus comprobó y contesta".
 
 ## Herramientas, si están instaladas
 
