@@ -1,6 +1,6 @@
 ---
 name: engineering-work-guide
-description: Use when working on any task inside a code repository, before reading or editing files: implementing or refactoring code, fixing bugs or failing tests, improving performance, changing schemas or migrating tables, building data pipelines, SQL or analytics, evaluating prompts, models or LLM/RAG systems, reviewing diffs, or deleting files and data. Not for general knowledge questions, translations, jokes or explaining a single concept.
+description: Use when working on any task inside a code repository, before reading or editing files: implementing or refactoring code, fixing bugs or failing tests, improving performance, changing schemas or migrating tables, building data pipelines, SQL or analytics, evaluating prompts, models or LLM/RAG systems, reviewing diffs, or deleting files and data. Also when the user asks to set up or replicate their agent environment on a new machine (install my skills, plugins, settings, preferences). Not for general knowledge questions, translations, jokes or explaining a single concept.
 ---
 
 # Guía de trabajo de ingeniería
@@ -15,7 +15,7 @@ Sigue estos cinco pasos en orden, también en cambios pequeños.
 
 1. **Entender y estimar.**
    1. Lee las normas del repositorio (parada 1).
-   2. Haz el inventario de las herramientas del agente: skills, plugins, hooks y servidores MCP activos. Sácalo de lo que ya tienes: la lista de herramientas y skills de la sesión y los ficheros de configuración que ya hayas visto al leer las normas. No gastes comandos solo en buscarlos salvo que la tarea trate de ellos. No instales, actives ni desactives nada.
+   2. Haz el inventario de las herramientas del agente: skills, plugins, hooks y servidores MCP activos. Sácalo de lo que ya tienes: la lista de herramientas y skills de la sesión y los ficheros de configuración que ya hayas visto al leer las normas. No gastes comandos solo en buscarlos salvo que la tarea trate de ellos. No instales, actives ni desactives nada, salvo cuando el usuario pida preparar su entorno (apartado siguiente al ciclo).
    3. Anota qué herramientas chocan con las normas del repositorio, cuáles se solapan entre sí y cuáles mandan datos fuera. Ejemplo de choque: un hook que hace commit automático frente a una norma que exige revisión antes de cada commit. Ante un choque, sigue las normas. Por qué: una instrucción de una herramienta puede contradecir al repositorio y nadie lo verá si no se dice.
    4. En tareas de diseño, cifras antes de arquitectura: volumen, lo que lee cada ejecución, latencia y frescura necesarias, coste mensual y coste de un error (plantilla en `assets/estimacion.md`). Marca cada cifra como medida o supuesta.
    5. Escribe las suposiciones. Si la petición admite dos lecturas que cambian el comportamiento, aplica la parada 3 antes de seguir.
@@ -32,6 +32,13 @@ Sigue estos cinco pasos en orden, también en cambios pequeños.
    2. Compara con algo que no salga del mismo paso: valores calculados a mano, la versión anterior u otra implementación.
    3. Ejecuta el resultado como se ejecutará de verdad: proceso real, datos reales pequeños, entrada real.
 5. **Entregar con informe** (formato más abajo).
+
+## Preparar el entorno del usuario
+
+Si el usuario pide llevar su configuración a esta máquina ("prepara mi entorno", "instala mi configuración"), sigue `entorno/LEEME.md`: sus preferencias de trabajo, plugins, skills, servidores MCP y ajustes, para el agente que haya instalado.
+1. Antes de instalar, lee la política de la empresa sobre herramientas de IA; lo que prohíba no se instala.
+2. Instalar descarga código: presenta la lista y pide un sí (parada 4).
+3. Las preferencias van al fichero de instrucciones de usuario del agente, nunca al repositorio de la empresa.
 
 ## Cinco paradas obligatorias
 

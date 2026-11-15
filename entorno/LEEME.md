@@ -1,0 +1,98 @@
+# Preparar el entorno del usuario en una máquina nueva
+
+Procedimiento para que el agente deje en otra máquina la misma configuración que el usuario usa en la suya: preferencias, plugins, skills, servidores MCP y ajustes. Se sigue **solo cuando el usuario lo pide** ("prepara mi entorno", "instala mi configuración").
+
+## Qué hay en esta carpeta
+
+| Fichero | Para qué |
+|---|---|
+| `preferencias.md` | Cómo trabaja y quiere que se le responda. Va al fichero de instrucciones de usuario del agente |
+| `claude-settings.json` | Ajustes de Claude Code que se fusionan con `~/.claude/settings.json` |
+| `statusline.ps1` | Línea de estado de Claude Code (necesita PowerShell 7, `pwsh`) |
+| `skills/cdp-browser/` | Skill propia de automatización del navegador real por CDP (Windows, Node 22+) |
+
+## Paso 0. Antes de instalar nada
+
+1. **Normas de la empresa.** Busca política sobre herramientas de IA permitidas, extensiones, servidores MCP y datos que salen de la red. Si prohíbe algo de la lista, no se instala y se dice.
+2. **Detecta el agente** y su versión: Claude Code (`claude --version`), Codex (`codex --version`), Cursor, GitHub Copilot, opencode, Gemini CLI u otro.
+3. **Presenta el plan** con la tabla del paso 5 rellena (qué se instala, de dónde, qué manda fuera) y pide un sí. Instalar descarga código de internet: es una acción hacia fuera (parada 4 de `SKILL.md`).
+4. Copia de seguridad de lo que vayas a sobrescribir (`settings.json` → `settings.json.bak`).
+
+## Paso 1. Preferencias (todos los agentes)
+
+Añade el contenido de `preferencias.md` al fichero de instrucciones **de usuario** (no al del repositorio de la empresa). Si el fichero ya existe, añade al final; no borres lo que hay.
+
+| Agente | Fichero de usuario |
+|---|---|
+| Claude Code | `~/.claude/CLAUDE.md` |
+| Codex | `~/.codex/AGENTS.md` |
+| opencode | `~/.config/opencode/AGENTS.md` |
+| Gemini CLI | `~/.gemini/GEMINI.md` |
+| Cursor | Ajustes > Rules > User Rules (pegar el texto) |
+| Copilot | Instrucciones personalizadas de usuario en los ajustes del editor |
+
+Si la ruta no coincide con la versión instalada, consulta la documentación del agente antes de escribir.
+
+## Paso 2. Plugins (Claude Code)
+
+```bash
+claude plugin marketplace add JuliusBrussee/caveman
+claude plugin marketplace add DietrichGebert/ponytail
+claude plugin install superpowers@claude-plugins-official
+claude plugin install caveman@caveman
+claude plugin install ponytail@ponytail
+claude plugin install security-guidance@claude-plugins-official
+claude plugin install pr-review-toolkit@claude-plugins-official
+claude plugin install commit-commands@claude-plugins-official
+claude plugin install frontend-design@claude-plugins-official
+```
+
+Opcional, solo si el trabajo usa Vercel: `claude plugin install vercel@claude-plugins-official`.
+
+| Plugin | Qué aporta | Hooks / red |
+|---|---|---|
+| superpowers | Método: brainstorming, planes, TDD, depuración sistemática, revisión | Hook al arrancar sesión |
+| caveman | Respuestas telegráficas, menos tokens | Hooks al arrancar y en cada mensaje (necesita `node`) |
+| ponytail | Construir lo mínimo (la escalera de `preferencias.md`) | Hooks al arrancar y en cada mensaje (necesita `node`) |
+| security-guidance | Avisos de seguridad al editar | Hook en edición |
+| pr-review-toolkit | Agentes de revisión de PR | No |
+| commit-commands | `/commit`, `/commit-push-pr` | No |
+| frontend-design | Diseño de interfaces con criterio | No |
+
+**Otros agentes:** superpowers tiene instalación para Codex, opencode y otros (sigue su README en `github.com/obra/superpowers`). Caveman y ponytail no hacen falta fuera de Claude Code: sus reglas ya están en `preferencias.md`.
+
+## Paso 3. Ajustes (Claude Code)
+
+1. Fusiona `claude-settings.json` con `~/.claude/settings.json`: las claves del fichero ganan, las demás se conservan. No copies permisos ni modos que salten confirmaciones; en una máquina de empresa los decide el usuario.
+2. Copia `statusline.ps1` a `~/.claude/statusline.ps1` y pon en `statusLine.command` la **ruta absoluta** (Windows no expande `~` ahí). Sin `pwsh`, quita `statusLine`.
+
+## Paso 4. Skills
+
+Skills públicas, con la CLI `skills` (instala para varios agentes; confirma las opciones con `npx skills add --help`):
+
+```bash
+npx skills add anthropics/skills --skill frontend-design -g
+npx skills add pbakaus/impeccable -g
+npx skills add vercel-labs/agent-skills --skill web-design-guidelines -g
+npx skills add wshobson/agents --skill tailwind-design-system -g
+npx skills add vercel-labs/skills --skill find-skills -g
+```
+
+Skill propia `cdp-browser` (solo Windows con Brave o Chrome): copia `skills/cdp-browser/` a `~/.claude/skills/cdp-browser/`. Usa la sesión real del navegador del usuario; en una máquina de empresa, pregunta antes si se instala.
+
+No se llevan por defecto (personales, no de trabajo): skills de LinkedIn (`li-*`) y de SEO (`seo-*`). Solo si el usuario las pide.
+
+## Paso 5. Servidores MCP
+
+| Servidor | Instalación | Manda datos fuera |
+|---|---|---|
+| codegraph (grafo de código local) | `npm i -g @colbymchenry/codegraph` y `claude mcp add --scope user codegraph -- codegraph serve --mcp`; en cada repo, `codegraph init -i` | No, índice local |
+| pencil (diseño `.pen`) | Solo si se instala la app Pencil; la app registra su propio MCP | Según la app |
+
+Otros agentes: registra `codegraph serve --mcp` como servidor MCP stdio en su configuración.
+
+## Paso 6. Verificar e informar
+
+1. Reinicia el agente y comprueba: `claude plugin list`, `claude mcp list`, y que la sesión arranca con los hooks de caveman y ponytail sin error.
+2. Pide una tarea trivial y mira que responde en español, corto, y que un commit sale sin coautoría.
+3. Informe: qué se instaló, qué no y por qué (política, agente sin soporte, falta `node` o `pwsh`), y qué choca con las normas de la empresa.

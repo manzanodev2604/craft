@@ -16,7 +16,7 @@ Cómo trabaja el propio agente: sus herramientas, su contexto y su continuidad. 
 
 ## 1. Inventario de las herramientas del agente
 
-**Por defecto:** al empezar cada tarea, haz el inventario de lo que el agente tiene activo. No pidas permiso para mirarlo y no instales, actives, desactives ni busques nada nuevo.
+**Por defecto:** al empezar cada tarea, haz el inventario de lo que el agente tiene activo. No pidas permiso para mirarlo y no instales, actives, desactives ni busques nada nuevo. La única excepción es que el usuario pida preparar su entorno: entonces se sigue `entorno/LEEME.md`, con su permiso.
 
 Dónde mirar, según lo que ofrezca el agente que uses:
 1. La configuración del agente en el repositorio (su carpeta oculta de configuración, ficheros de ajustes del proyecto).
