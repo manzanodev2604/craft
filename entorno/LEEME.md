@@ -80,7 +80,7 @@ npx skills add wshobson/agents --skill tailwind-design-system -g
 npx skills add vercel-labs/skills --skill find-skills -g
 ```
 
-Skill propia `cdp-browser` (solo Windows con Brave o Chrome): copia `skills/cdp-browser/` a `~/.claude/skills/cdp-browser/`. Usa la sesión real del navegador del usuario; en una máquina de empresa, pregunta antes si se instala.
+Skill propia `cdp-browser` (solo Windows con Brave o Chrome): enlaza, no copies, para que `git pull` de esta skill la actualice también. PowerShell: `New-Item -ItemType Junction -Path "$HOME\.claude\skills\cdp-browser" -Target "$HOME\.claude\skills\engineering-work-guide\entorno\skills\cdp-browser"`. Usa la sesión real del navegador del usuario; en una máquina de empresa, pregunta antes si se instala.
 
 No se llevan por defecto (personales, no de trabajo): skills de LinkedIn (`li-*`) y de SEO (`seo-*`). Solo si el usuario las pide.
 
