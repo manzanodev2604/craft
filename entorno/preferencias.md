@@ -87,6 +87,6 @@ Para gastar menos límite de uso. Solo ahorra con mucho material; en preguntas c
 
 ## Herramientas, si están instaladas
 
-- **Grafo de código (codegraph MCP):** para preguntas estructurales (dónde se define, quién llama, qué rompe un cambio) úsalo antes que grep. Grep solo para texto literal. Si el proyecto no tiene `.codegraph/`, pregunta si se inicializa con `codegraph init -i`.
+- **Grafo de código (leo-mcp):** en cualquier pregunta sobre código, la primera llamada es `get_context` con la tarea. Para preguntas estructurales, `graph`: `where` (dónde se define), `who_calls` (quién llama), `impact` (qué rompe un cambio), `trace` (camino de A a B), `guard` (impacto y qué no tiene test). Úsalo antes que grep o leer ficheros enteros; grep solo para texto literal. Antes de editar código compartido, `guard`. Es un grafo estático: llamadas por colas, WebSockets, subprocesos o nombres construidos con texto no aparecen; dilo en el informe. Si solo está codegraph, el mismo criterio con sus herramientas.
 - **Navegador:** primero la skill `cdp-browser` (navegador real del usuario por CDP), después la extensión del navegador del agente, y Playwright solo si se pide. Antes de enviar formularios, comprar o publicar, preguntar. No cerrar las pestañas del usuario.
 - **Método:** en tareas de código, seguir la skill `craft`.

@@ -88,10 +88,18 @@ No se llevan por defecto (personales, no de trabajo): skills de LinkedIn (`li-*`
 
 | Servidor | Instalación | Manda datos fuera |
 |---|---|---|
-| codegraph (grafo de código local) | `npm i -g @colbymchenry/codegraph` y `claude mcp add --scope user codegraph -- codegraph serve --mcp`; en cada repo, `codegraph init -i` | No, índice local |
+| **leo-mcp** (grafo de llamadas con `fichero:línea`, `impact`, `guard`, `get_context`) | Ver abajo | No: sin LLM ni claves, índice en la caché del usuario |
+| codegraph (alternativa, solo si leo-mcp no se puede usar) | `npm i -g @colbymchenry/codegraph` y `claude mcp add --scope user codegraph -- codegraph serve --mcp`; en cada repo, `codegraph init -i` | No, índice local |
 | pencil (diseño `.pen`) | Solo si se instala la app Pencil; la app registra su propio MCP | Según la app |
 
-Otros agentes: registra `codegraph serve --mcp` como servidor MCP stdio en su configuración.
+Un solo servidor de grafo: leo-mcp o codegraph, nunca los dos (duplican herramientas y contexto).
+
+**leo-mcp, a nivel de usuario** (no escribe nada en los repositorios de la empresa):
+1. `uv tool install leo-mcp` (sin uv: `pip install leo-mcp`, Python 3.11 o superior). Comprueba con `leo-mcp doctor`.
+2. Claude Code: `claude mcp add --scope user leo-mcp -- leo-mcp`. No uses `leo-mcp init` dentro de un repositorio de la empresa: escribe `.mcp.json` y `.claude/settings.json` en él.
+3. Aviso antes de editar (hook `PreToolUse`, nunca bloquea): ejecuta `leo-mcp init --client claude` en una carpeta temporal vacía, copia la entrada `hooks.PreToolUse` que imprime (`matcher: "Edit|Write"`, comando `<python> -m leo_code.guard_hook`) a `~/.claude/settings.json` y borra la carpeta. Calla en repos sin índice.
+4. Otros agentes: registra el comando `leo-mcp` como servidor MCP stdio en la configuración **de usuario** del agente.
+5. Primer uso en cada repo: `leo-mcp index` (el índice va a la caché del usuario, no al repo).
 
 ## Paso 6. Verificar e informar
 
