@@ -66,6 +66,16 @@
             "timeout": 5
           }
         ]
+      },
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/skills/craft/entorno/hooks/leo-indice.mjs\"",
+            "timeout": 5
+          }
+        ]
       }
     ]
   },

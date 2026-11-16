@@ -11,6 +11,7 @@ Procedimiento para que el agente deje en otra máquina la misma configuración q
 | `statusline.ps1` | Línea de estado de Claude Code (necesita PowerShell 7, `pwsh`) |
 | `hooks/titulo-sesion.mjs` | Hook de Claude Code: si la sesión empieza solo con `/craft`, la titula con la carpeta y después con el objetivo, nunca con el nombre de la skill (necesita `node`; comprobación: `node titulo-sesion.mjs --test`) |
 | `hooks/craft-siempre.mjs` | Hook de Claude Code: carga esta guía entera al abrir la sesión (y tras compactar) y recuerda en cada mensaje que está activa, sin depender de que el modelo la elija (necesita `node`; comprobación: `node craft-siempre.mjs --test`). Con él sobra la línea en `AGENTS.md` del proyecto; en otros agentes, sigue haciendo falta |
+| `hooks/leo-indice.mjs` | Hook de Claude Code: al abrir sesión en un repo git, lanza `leo-mcp index` en segundo plano para que el aviso antes de editar funcione desde el primer cambio (no bloquea; sin leo-mcp no hace nada) |
 | `skills/cdp-browser/` | Skill propia de automatización del navegador real por CDP (Windows, Node 22+) |
 
 ## Paso 0. Antes de instalar nada
@@ -102,7 +103,7 @@ Un solo servidor de grafo: leo-mcp o codegraph, nunca los dos (duplican herramie
 2. Claude Code: `claude mcp add --scope user leo-mcp -- leo-mcp`. No uses `leo-mcp init` dentro de un repositorio de la empresa: escribe `.mcp.json` y `.claude/settings.json` en él.
 3. Aviso antes de editar (hook `PreToolUse`, nunca bloquea): ejecuta `leo-mcp init --client claude` en una carpeta temporal vacía, copia la entrada `hooks.PreToolUse` que imprime (`matcher: "Edit|Write"`, comando `<python> -m leo_code.guard_hook`) a `~/.claude/settings.json` y borra la carpeta. Calla en repos sin índice.
 4. Otros agentes: registra el comando `leo-mcp` como servidor MCP stdio en la configuración **de usuario** del agente.
-5. Primer uso en cada repo: `leo-mcp index` (el índice va a la caché del usuario, no al repo).
+5. Índice: lo crea solo el hook `leo-indice.mjs` al abrir sesión (en otros agentes, `leo-mcp index` la primera vez en cada repo). Va a la caché del usuario, no al repo.
 
 ## Paso 6. Verificar e informar
 
