@@ -46,7 +46,30 @@
             "timeout": 5
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/skills/craft/entorno/hooks/craft-siempre.mjs\" mensaje",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/skills/craft/entorno/hooks/craft-siempre.mjs\" sesion",
+            "timeout": 5
+          }
+        ]
       }
     ]
+  },
+  "skillOverrides": {
+    "craft": "user-invocable-only"
   }
 }

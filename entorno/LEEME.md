@@ -10,6 +10,7 @@ Procedimiento para que el agente deje en otra máquina la misma configuración q
 | `claude-settings.json` | Ajustes de Claude Code que se fusionan con `~/.claude/settings.json` |
 | `statusline.ps1` | Línea de estado de Claude Code (necesita PowerShell 7, `pwsh`) |
 | `hooks/titulo-sesion.mjs` | Hook de Claude Code: si la sesión empieza solo con `/craft`, la titula con la carpeta y después con el objetivo, nunca con el nombre de la skill (necesita `node`; comprobación: `node titulo-sesion.mjs --test`) |
+| `hooks/craft-siempre.mjs` | Hook de Claude Code: carga esta guía entera al abrir la sesión (y tras compactar) y recuerda en cada mensaje que está activa, sin depender de que el modelo la elija (necesita `node`; comprobación: `node craft-siempre.mjs --test`). Con él sobra la línea en `AGENTS.md` del proyecto; en otros agentes, sigue haciendo falta |
 | `skills/cdp-browser/` | Skill propia de automatización del navegador real por CDP (Windows, Node 22+) |
 
 ## Paso 0. Antes de instalar nada
