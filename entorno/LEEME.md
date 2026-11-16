@@ -48,7 +48,9 @@ claude plugin install commit-commands@claude-plugins-official
 claude plugin install frontend-design@claude-plugins-official
 ```
 
-Opcional, solo si el trabajo usa Vercel: `claude plugin install vercel@claude-plugins-official`.
+Opcional, solo si el trabajo usa Vercel: `claude plugin install vercel@claude-plugins-official`, desactivado a nivel de usuario (`"vercel@claude-plugins-official": false`) y activado solo en el `.claude/settings.local.json` de los proyectos que lo usan: son 37 skills, unos 11.000 caracteres de contexto en cada mensaje.
+
+Cada skill visible cuesta contexto en todos los mensajes, se use o no. Las que solo quieras invocar a mano con `/nombre` van en `skillOverrides` como `"user-invocable-only"`; `/skill-doctor` muestra cuánto cuesta cada una y cuáles no se usan nunca.
 
 | Plugin | Qué aporta | Hooks / red |
 |---|---|---|
