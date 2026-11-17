@@ -16,6 +16,7 @@ Chatbots, RAG, extracción, clasificación, agentes y cualquier sistema que llam
 10. Seguridad
 11. Datos personales
 12. Prompts versionados y regresiones
+13. Construir el prompt
 
 Cifras de este fichero: fuentes de 2024 a 2026 recogidas el 25/10/2026. Precios, ventanas de contexto y nombres de modelos: comprobar en el momento.
 
@@ -206,3 +207,25 @@ Método:
 **Verificar:** conjunto de regresión antes del primer cambio, alimentado con incidentes reales; puerta de CI por calidad, coste y latencia que también salta al cambiar de modelo.
 
 **Señalar siempre:** cambios de prompt o de modelo sin vuelta atrás preparada.
+
+## 13. Construir el prompt
+
+El prompt de una aplicación lo escribe el agente, como el resto del código. Del usuario salen el objetivo, casos reales resueltos y qué cuenta como acierto; si faltan, pídelos antes de escribirlo.
+
+**Por defecto**, en este orden:
+1. Rol y tarea en una o dos frases, con para qué se usa la salida.
+2. Lo que no cambia entre llamadas (instrucciones, esquemas, documentos fijos) en el system prompt y con caché de prompts; lo variable, después.
+3. Cada bloque de entrada en su etiqueta XML (`<parte>`, `<croquis>`) para poder nombrarlo en las instrucciones.
+4. El orden en que debe analizar las entradas, si importa.
+5. De 3 a 5 ejemplos resueltos y variados, incluido uno difícil o ambiguo.
+6. Que cite el dato de la entrada que respalda cada afirmación y que diga "no se sabe" en vez de adivinar.
+7. Al final, las dos o tres reglas que no puede saltarse.
+8. Formato de salida con salidas estructuradas (apartado 5). No uses prefill (empezar tú la respuesta del modelo): desde los modelos Claude 4.6 devuelve error.
+
+**Cambiar si:** la tarea es trivial y una frase basta; no añadas piezas que la evaluación no pide.
+
+**Verificar:** prueba con el conjunto del apartado 3 y lee los fallos. Si no se ve por qué falla, activa el razonamiento extendido, léelo y pasa al prompt el proceso correcto. Cada instrucción nueva puede tener efectos colaterales (pedir "revisa cada casilla" hace que las liste todas): vuelve a pasar el conjunto entero.
+
+**Señalar siempre:** instrucciones añadidas sin un fallo medido que las justifique, y ejemplos inventados en lugar de casos reales.
+
+Fuente: Anthropic, "Prompting 101" (Code w/ Claude, 2025) y documentación de buenas prácticas de prompts, consultada el 17/11/2026.
