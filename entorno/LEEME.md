@@ -101,7 +101,7 @@ npx skills add addyosmani/agent-skills -s observability-and-instrumentation -g -
 
 Una skill por llamada: con `-s a,b` la CLI listó las skills y no instaló ninguna. `--copy` deja ficheros reales en `~/.claude/skills` en vez de enlaces.
 
-Skill propia `trabajo-diario` (cualquier sistema): enlázala igual que `cdp-browser`. PowerShell: `New-Item -ItemType Junction -Path "$HOME\.claude\skills	rabajo-diario" -Target "$HOME\.claude\skills\craft\entorno\skills	rabajo-diario"`; en Linux o macOS, `ln -s`.
+Skill propia `trabajo-diario` (cualquier sistema): enlázala igual que `cdp-browser`. PowerShell: `New-Item -ItemType Junction -Path "$HOME\.claude\skills\trabajo-diario" -Target "$HOME\.claude\skills\craft\entorno\skills\trabajo-diario"`; en Linux o macOS, `ln -s`.
 
 Skill propia `cdp-browser` (solo Windows con Brave o Chrome): enlaza, no copies, para que `git pull` de esta skill la actualice también. PowerShell: `New-Item -ItemType Junction -Path "$HOME\.claude\skills\cdp-browser" -Target "$HOME\.claude\skills\craft\entorno\skills\cdp-browser"`. Usa la sesión real del navegador del usuario; en una máquina de empresa, pregunta antes si se instala.
 
