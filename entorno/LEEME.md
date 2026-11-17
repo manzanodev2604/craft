@@ -13,6 +13,7 @@ Procedimiento para que el agente deje en otra máquina la misma configuración q
 | `hooks/craft-siempre.mjs` | Hook de Claude Code: carga esta guía entera al abrir la sesión (y tras compactar) y recuerda en cada mensaje que está activa, sin depender de que el modelo la elija (necesita `node`; comprobación: `node craft-siempre.mjs --test`). Con él sobra la línea en `AGENTS.md` del proyecto; en otros agentes, sigue haciendo falta |
 | `hooks/leo-indice.mjs` | Hook de Claude Code: al abrir sesión en un repo git, lanza `leo-mcp index` en segundo plano para que el aviso antes de editar funcione desde el primer cambio (no bloquea; sin leo-mcp no hace nada) |
 | `skills/trabajo-diario/` | Skill propia de oficina: actas que solo dan por decidido lo acordado, ponerse al día en hilos, comparar versiones de un documento y redactar según quién lo recibe; siempre citando la fuente y marcando `[FALTA]` en vez de inventar. Se carga sola |
+| `mods/prompt-mejorado/` | Mod de Claude Code: tras cada mensaje del usuario, Haiku lo reescribe como prompt claro (objetivo, contexto, restricciones, cómo saber que está bien; `[FALTA]` en lo que no se dijo) y lo muestra en gris debajo. Solo se ve: el modelo trabaja con el texto original. Una llamada a Haiku por mensaje de 15 caracteres o más |
 | `skills/cdp-browser/` | Skill propia de automatización del navegador real por CDP (Windows, Node 22+) |
 
 ## Paso 0. Antes de instalar nada
@@ -49,6 +50,13 @@ claude plugin install security-guidance@claude-plugins-official
 claude plugin install pr-review-toolkit@claude-plugins-official
 claude plugin install commit-commands@claude-plugins-official
 claude plugin install frontend-design@claude-plugins-official
+```
+
+Mods propios de craft (marketplace local en `entorno/mods`):
+
+```
+claude plugin marketplace add ~/.claude/skills/craft/entorno/mods
+claude plugin install prompt-mejorado@craft-mods --scope user
 ```
 
 Opcional, solo si el trabajo usa Vercel: `claude plugin install vercel@claude-plugins-official`, desactivado a nivel de usuario (`"vercel@claude-plugins-official": false`) y activado solo en el `.claude/settings.local.json` de los proyectos que lo usan: son 37 skills, unos 11.000 caracteres de contexto en cada mensaje.

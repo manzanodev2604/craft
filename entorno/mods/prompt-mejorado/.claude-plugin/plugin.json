@@ -1,0 +1,1 @@
+{ "name": "prompt-mejorado", "version": "0.1.0", "description": "Shows a clearer rewrite of each prompt, dimmed under the user's message", "types": "./types/index.d.ts" }

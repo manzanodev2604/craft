@@ -1,0 +1,9 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "craft-mods",
+  "description": "Claude Code mods that ship with the craft skill",
+  "owner": { "name": "manzanodev2604" },
+  "plugins": [
+    { "name": "prompt-mejorado", "description": "Shows a clearer rewrite of each prompt, dimmed under the user's message", "source": "./prompt-mejorado" }
+  ]
+}
