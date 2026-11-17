@@ -80,6 +80,7 @@
     ]
   },
   "skillOverrides": {
-    "craft": "user-invocable-only"
+    "craft": "user-invocable-only",
+    "llm-council": "name-only"
   }
 }

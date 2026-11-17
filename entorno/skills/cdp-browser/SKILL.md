@@ -42,7 +42,7 @@ CDP stop                       # closes this session's hidden tab (stays connect
 | `eval` | js | returns JSON value; promises awaited |
 | `shot` | file.png | ~1.2 s. Hidden tabs don't paint, so it snapshots the live DOM (MHTML, current state) and renders it in a throwaway headless Chrome (no window, temp profile). Viewport 1280x800; canvas/video content may be missing |
 | `tabs` | — | lists the user's open pages (read-only) |
-| `in` | url-substring | run the REST of the call in the user's existing tab whose URL contains it (Brave first, then Chrome). For single-session web apps (WhatsApp Web, etc.) where opening a second tab would steal the session. Read-only by default: `text`/`eval`/`wait` only; ask the user before `click`/`fill` there |
+| `in` | url-substring | run the REST of the call in the user's existing tab whose URL contains it (Brave first, then Chrome). Not open anywhere → opens `https://<arg>` itself: hidden tab first; if that fails to load, a normal background tab (visible in the tab strip, focus untouched); output says which. The opened tab is reused by later `in` calls. `in <site> visible` → normal tab straight away: use it when the site loads but misbehaves hidden (blank, stuck, asks to keep the tab visible). For single-session web apps (WhatsApp Web, etc.) where opening a second tab would steal the session. Read-only by default: `text`/`eval`/`wait` only; ask the user before `click`/`fill` there |
 
 ## Rules
 - WhatsApp Web: read the chat list with `CDP in web.whatsapp.com + eval ...` on `[aria-label="Lista de chats"] [role=row]` (use textContent; the tab is hidden). Never open a chat (marks it read) or send anything without explicit user request.

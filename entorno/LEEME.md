@@ -86,6 +86,14 @@ npx skills add vercel-labs/skills --skill find-skills -g
 
 Skill propia `cdp-browser` (solo Windows con Brave o Chrome): enlaza, no copies, para que `git pull` de esta skill la actualice también. PowerShell: `New-Item -ItemType Junction -Path "$HOME\.claude\skills\cdp-browser" -Target "$HOME\.claude\skills\craft\entorno\skills\cdp-browser"`. Usa la sesión real del navegador del usuario; en una máquina de empresa, pregunta antes si se instala.
 
+Consejo de asesores (`llm-council`): cinco asesores con enfoques opuestos, revisión anónima entre ellos y un veredicto. Sin licencia en su repo: se clona, no se copia a esta skill.
+
+```bash
+git clone --depth 1 https://github.com/aiwithremy/claude-skills-llm-council ~/.claude/skills/llm-council
+```
+
+Va en `skillOverrides` como `"name-only"` (ya está en `claude-settings.json`): su descripción se dispara con "¿cuál elijo?" y cada consulta lanza 11 subagentes. Se usa diciendo "pásalo por el consejo", solo en decisiones caras de revertir.
+
 No se llevan por defecto (personales, no de trabajo): skills de LinkedIn (`li-*`) y de SEO (`seo-*`). Solo si el usuario las pide.
 
 ## Paso 5. Servidores MCP
@@ -109,4 +117,5 @@ Un solo servidor de grafo: leo-mcp o codegraph, nunca los dos (duplican herramie
 
 1. Reinicia el agente y comprueba: `claude plugin list`, `claude mcp list`, y que la sesión arranca con los hooks de caveman y ponytail sin error.
 2. Pide una tarea trivial y mira que responde en español, corto, y que un commit sale sin coautoría.
-3. Informe: qué se instaló, qué no y por qué (política, agente sin soporte, falta `node` o `pwsh`), y qué choca con las normas de la empresa.
+3. Auditoría de la configuración con AgentShield, una vez y solo en modo estático (sin `--opus`, que manda datos fuera; sin `--fix` ni `--sandbox`, que tocan o ejecutan la configuración). Versión fija en una carpeta aparte: `npm i --ignore-scripts ecc-agentshield@1.6.0` y `npx agentshield scan --path <copia>`. La 1.6.0 falla con un enlace (junction) dentro de `~/.claude` (`EISDIR`): escanea una copia hecha con `cp -rL` de `settings.json`, `CLAUDE.md`, `agents/` y `skills/`. Casi todo lo que marca es la plantilla "Missing prompt defense" en cada `.md`; lo que importa son los apartados `permissions`, `hooks`, `mcp` y `secrets`. Una máquina de empresa debería salir con lista `deny` (secretos, `.env`, `git push --force`) y sin `defaultMode` que salte confirmaciones.
+4. Informe: qué se instaló, qué no y por qué (política, agente sin soporte, falta `node` o `pwsh`), y qué choca con las normas de la empresa.

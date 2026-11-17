@@ -120,7 +120,13 @@ async function client() {
 
   let res = await callRoute(route);
   if (!explicit && res.notFound && route === 'default' && res.mode === 'brave') { // user tab not in Brave → try Chrome
-    const alt = await callRoute('chrome'); if (!alt.notFound) { res = alt; route = 'chrome'; }
+    const alt = await callRoute('chrome'); if (!alt.notFound && !alt.err) { res = alt; route = 'chrome'; } // Chrome closed → keep Brave's answer
+  }
+  if (route === 'chrome' && /no browser/.test(res.err || '')) { route = 'default'; res = await callRoute(route); } // stale Chrome route → back to Brave
+  if (res.notFound && ii >= 0) { // the user has it open nowhere → open it ourselves in the preferred browser
+    const vis = args[ii + 2] === 'visible';
+    args.splice(ii + 2, vis ? 1 : 0, vis ? 'open-visible' : 'open');
+    route = 'default'; res = await callRoute(route);
   }
   if (!explicit && res.loginWall && res.mode === 'brave') {
     const alt = await callRoute('chrome');
@@ -188,6 +194,34 @@ async function serve() {
     ws.onclose = () => process.exit(0); // browser gone or toggle off → next client call respawns
   }
   const tabs = new Map(); // who (Claude session) → { tab, session }
+  const apps = new Map(); // `in` site we had to open ourselves → { id, hidden }; shared by sessions, never closed by us
+  const viewport = sid => send('Emulation.setDeviceMetricsOverride', { width: 1280, height: 800, deviceScaleFactor: 1, mobile: false }, sid).catch(() => {});
+  // Open `a` for `in`: hidden tab first (invisible); if it fails to load, a normal background tab (visible in the tab
+  // strip, focus untouched). The site's session stays in that tab for later `in` calls.
+  const openApp = async (a, visible) => {
+    const url = /^[a-z]+:\/\//i.test(a) ? a : `https://${a}`;
+    const tryOpen = async hidden => {
+      const { targetId } = await send('Target.createTarget', { url: 'about:blank', ...(hidden ? { hidden: true } : { background: true }) });
+      const { sessionId: s } = await send('Target.attachToTarget', { targetId, flatten: true });
+      try {
+        if (hidden) await viewport(s);
+        const nav = await send('Page.navigate', { url }, s);
+        if (nav.errorText) throw new Error(nav.errorText);
+        for (const t0 = Date.now(); ; await sleep(100)) {
+          const r = await send('Runtime.evaluate', { expression: 'document.readyState', returnByValue: true }, s).catch(() => null);
+          if (r?.result?.value && r.result.value !== 'loading') break;
+          if (Date.now() - t0 > 20000) throw new Error('load timeout');
+        }
+        return targetId;
+      } catch (e) { await send('Target.closeTarget', { targetId }).catch(() => {}); throw e; }
+      finally { send('Target.detachFromTarget', { sessionId: s }).catch(() => {}); }
+    };
+    let id, note;
+    if (!visible) try { id = await tryOpen(true); note = 'opened in hidden tab'; } catch (e) { note = `hidden tab failed (${e.message}) → opened in normal tab`; }
+    if (!id) { id = await tryOpen(false); note ??= 'opened in normal tab'; }
+    apps.set(a, { id, hidden: note === 'opened in hidden tab' });
+    return { targetId: id, title: `(${note})`, url };
+  };
   const closeTabs = () => Promise.all([...tabs.values()].map(s => send('Target.closeTarget', { targetId: s.tab }).catch(() => {})));
   const ensureTab = async who => {
     const pages = (await send('Target.getTargets')).targetInfos.filter(t => t.type === 'page');
@@ -249,10 +283,19 @@ async function serve() {
                 return { out: lines.join('\n'), code: 0, mode, loginWall: true };
               } }
             break;
-          case 'in': { // act in the user's existing tab whose URL contains `a` (for single-session apps like WhatsApp Web)
-            const t = pages.find(p => p.url.includes(a));
-            if (!t) return { out: lines.join('\n'), err: `ERR no tab in ${mode} with URL containing "${a}"`, code: 1, mode, notFound: true };
+          case 'in': { // act in the user's existing tab whose URL contains `a` (for single-session apps like WhatsApp Web).
+            // None open anywhere → the client resends with b='open' (hidden tab; normal background tab if that fails)
+            // or b='open-visible' (user asked `in <site> visible`: normal tab straight away).
+            let t = pages.find(p => p.url.includes(a)), app = apps.get(a);
+            if (!t && app && await send('Target.getTargetInfo', { targetId: app.id }).catch(() => null)) {
+              if (app.hidden && b === 'visible') { // asked for a visible tab: drop our hidden one first (single-session sites)
+                await send('Target.closeTarget', { targetId: app.id }).catch(() => {}); apps.delete(a);
+              } else t = { targetId: app.id, title: app.hidden ? '(hidden tab)' : '(our normal tab)', url: a };
+            }
+            if (!t && !String(b).startsWith('open')) return { out: lines.join('\n'), err: `ERR no tab in ${mode} with URL containing "${a}"`, code: 1, mode, notFound: true };
+            if (!t) t = await openApp(a, b === 'open-visible');
             sid = (await send('Target.attachToTarget', { targetId: t.targetId, flatten: true })).sessionId;
+            if (apps.get(a)?.hidden && apps.get(a).id === t.targetId) await viewport(sid);
             detach.push(sid); out = `${t.title} | ${t.url}`; break;
           }
           case 'close': { // close the user's tabs whose URL contains `a` (only when the user asks)
