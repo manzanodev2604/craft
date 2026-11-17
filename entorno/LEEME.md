@@ -12,6 +12,7 @@ Procedimiento para que el agente deje en otra máquina la misma configuración q
 | `hooks/titulo-sesion.mjs` | Hook de Claude Code: si la sesión empieza solo con `/craft`, la titula con la carpeta y después con el objetivo, nunca con el nombre de la skill (necesita `node`; comprobación: `node titulo-sesion.mjs --test`) |
 | `hooks/craft-siempre.mjs` | Hook de Claude Code: carga esta guía entera al abrir la sesión (y tras compactar) y recuerda en cada mensaje que está activa, sin depender de que el modelo la elija (necesita `node`; comprobación: `node craft-siempre.mjs --test`). Con él sobra la línea en `AGENTS.md` del proyecto; en otros agentes, sigue haciendo falta |
 | `hooks/leo-indice.mjs` | Hook de Claude Code: al abrir sesión en un repo git, lanza `leo-mcp index` en segundo plano para que el aviso antes de editar funcione desde el primer cambio (no bloquea; sin leo-mcp no hace nada) |
+| `skills/trabajo-diario/` | Skill propia de oficina: actas que solo dan por decidido lo acordado, ponerse al día en hilos, comparar versiones de un documento y redactar según quién lo recibe; siempre citando la fuente y marcando `[FALTA]` en vez de inventar. Se carga sola |
 | `skills/cdp-browser/` | Skill propia de automatización del navegador real por CDP (Windows, Node 22+) |
 
 ## Paso 0. Antes de instalar nada
@@ -99,6 +100,8 @@ npx skills add addyosmani/agent-skills -s observability-and-instrumentation -g -
 | `observability-and-instrumentation` (addyosmani, MIT) | Añadir logs, métricas, trazas o alertas, o diagnosticar producción | Ninguno |
 
 Una skill por llamada: con `-s a,b` la CLI listó las skills y no instaló ninguna. `--copy` deja ficheros reales en `~/.claude/skills` en vez de enlaces.
+
+Skill propia `trabajo-diario` (cualquier sistema): enlázala igual que `cdp-browser`. PowerShell: `New-Item -ItemType Junction -Path "$HOME\.claude\skills	rabajo-diario" -Target "$HOME\.claude\skills\craft\entorno\skills	rabajo-diario"`; en Linux o macOS, `ln -s`.
 
 Skill propia `cdp-browser` (solo Windows con Brave o Chrome): enlaza, no copies, para que `git pull` de esta skill la actualice también. PowerShell: `New-Item -ItemType Junction -Path "$HOME\.claude\skills\cdp-browser" -Target "$HOME\.claude\skills\craft\entorno\skills\cdp-browser"`. Usa la sesión real del navegador del usuario; en una máquina de empresa, pregunta antes si se instala.
 
