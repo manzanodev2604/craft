@@ -84,6 +84,22 @@ npx skills add wshobson/agents --skill tailwind-design-system -g
 npx skills add vercel-labs/skills --skill find-skills -g
 ```
 
+Skills de ingeniería de terceros, con descripción completa (sin `skillOverrides`) para que el agente las cargue solo cuando la tarea lo pide:
+
+```bash
+npx skills add https://github.com/cloudflare/security-audit-skill -s security-audit -g -a claude-code -y --copy
+npx skills add addyosmani/agent-skills -s api-and-interface-design -g -a claude-code -y --copy
+npx skills add addyosmani/agent-skills -s observability-and-instrumentation -g -a claude-code -y --copy
+```
+
+| Skill | Cuándo la carga | Aviso |
+|---|---|---|
+| `security-audit` (Cloudflare, MIT) | Preguntas o revisiones de seguridad; el flujo completo de 6 fases solo si se pide una auditoría entera | El flujo completo lanza muchos subagentes. En Windows nativo sus validadores fallan ("OS no-follow ... unavailable"); la revisión funciona, la validación del informe no. En WSL, Linux o macOS va entera |
+| `api-and-interface-design` (addyosmani, MIT) | Diseñar endpoints, contratos entre módulos o interfaces públicas | Ninguno |
+| `observability-and-instrumentation` (addyosmani, MIT) | Añadir logs, métricas, trazas o alertas, o diagnosticar producción | Ninguno |
+
+Una skill por llamada: con `-s a,b` la CLI listó las skills y no instaló ninguna. `--copy` deja ficheros reales en `~/.claude/skills` en vez de enlaces.
+
 Skill propia `cdp-browser` (solo Windows con Brave o Chrome): enlaza, no copies, para que `git pull` de esta skill la actualice también. PowerShell: `New-Item -ItemType Junction -Path "$HOME\.claude\skills\cdp-browser" -Target "$HOME\.claude\skills\craft\entorno\skills\cdp-browser"`. Usa la sesión real del navegador del usuario; en una máquina de empresa, pregunta antes si se instala.
 
 Consejo de asesores (`llm-council`): cinco asesores con enfoques opuestos, revisión anónima entre ellos y un veredicto. Sin licencia en su repo: se clona, no se copia a esta skill.
