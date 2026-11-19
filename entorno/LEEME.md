@@ -177,6 +177,31 @@ Un solo servidor de grafo: leo-mcp o codegraph, nunca los dos (duplican herramie
 4. Otros agentes: registra el comando `leo-mcp` como servidor MCP stdio en la configuración **de usuario** del agente.
 5. Índice: lo crea solo el hook `leo-indice.mjs` al abrir sesión (en otros agentes, `leo-mcp index` la primera vez en cada repo). Va a la caché del usuario, no al repo.
 
+## Paso 5b. Escritorio (Windows)
+
+El usuario quiere el escritorio limpio: solo accesos directos a carpetas de `Documentos`, ningún fichero suelto. Estructura:
+
+| Acceso directo | Carpeta | Contenido |
+|---|---|---|
+| Proyectos | `Documentos\Proyectos` | `Activos`, `En pausa` y `Archivo`; cada repositorio en una de ellas |
+| Programas | `Documentos\Programas` | Instaladores por categoría: `Desarrollo`, `Navegadores`, `Productividad`, `Utilidades`, `Multimedia`, `Fuentes` |
+| Documentación | `Documentos\Documentación` | Contrato, acuerdos y documentos de la empresa |
+
+Crea lo que falte, sin tocar lo que ya exista (`New-Item -Force` sobre una carpeta no borra nada):
+
+```powershell
+$doc = [Environment]::GetFolderPath('MyDocuments'); $esc = [Environment]::GetFolderPath('Desktop'); $sh = New-Object -ComObject WScript.Shell
+$carpetas = @{ 'Proyectos' = 'Activos','En pausa','Archivo'; 'Programas' = 'Desarrollo','Navegadores','Productividad','Utilidades','Multimedia','Fuentes'; 'Documentación' = @() }
+foreach ($c in $carpetas.Keys) {
+  foreach ($s in $carpetas[$c]) { New-Item -ItemType Directory -Force (Join-Path $doc "$c\$s") | Out-Null }
+  New-Item -ItemType Directory -Force (Join-Path $doc $c) | Out-Null
+  $l = Join-Path $esc "$c.lnk"
+  if (-not (Test-Path $l)) { $a = $sh.CreateShortcut($l); $a.TargetPath = Join-Path $doc $c; $a.Save() }
+}
+```
+
+Si el escritorio ya tiene ficheros, propón a qué carpeta va cada uno y pide un sí antes de moverlos. Los instaladores que se descarguen durante el paso 0b, a su categoría de `Programas`.
+
 ## Paso 6. Verificar e informar
 
 1. Reinicia el agente y comprueba: `claude plugin list`, `claude mcp list`, y que la sesión arranca con los hooks de caveman y ponytail sin error.
