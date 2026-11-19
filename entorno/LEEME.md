@@ -23,6 +23,43 @@ Procedimiento para que el agente deje en otra máquina la misma configuración q
 3. **Presenta el plan** con la tabla del paso 5 rellena (qué se instala, de dónde, qué manda fuera) y pide un sí. Instalar descarga código de internet: es una acción hacia fuera (parada 4 de `SKILL.md`).
 4. Copia de seguridad de lo que vayas a sobrescribir (`settings.json` → `settings.json.bak`).
 
+## Paso 0b. Programas (Windows)
+
+Con `winget`. Instala lo imprescindible; lo probable, solo si el trabajo lo pide. Antes, el paso 0: si la empresa no permite un agente que envía código fuera (red cerrada, datos de clientes, defensa), no se instala Claude Code ni nada que llame a servicios externos sin su permiso.
+
+**Imprescindibles** (craft y desarrollo en Python):
+
+```
+winget install -e --id Git.Git
+winget install -e --id GitHub.cli
+winget install -e --id Python.Python.3.12
+winget install -e --id astral-sh.uv
+winget install -e --id OpenJS.NodeJS.22
+winget install -e --id Microsoft.PowerShell
+winget install -e --id BurntSushi.ripgrep.MSVC
+winget install -e --id Microsoft.VisualStudioCode
+winget install -e --id Brave.Brave
+wsl --install
+winget install -e --id Docker.DockerDesktop
+code --install-extension ms-python.python
+code --install-extension ms-python.vscode-pylance
+code --install-extension ms-toolsai.jupyter
+code --install-extension eamodio.gitlens
+```
+
+Si el repositorio está en GitLab, `glab` (`winget install -e --id GLab.GLab`) en lugar de `gh`. Si la empresa usa Chrome, `Google.Chrome` en lugar de Brave. leo-mcp va en el paso 5.
+
+**Probables** (según el proyecto):
+
+| Programa | Cuándo | Instalación |
+|---|---|---|
+| Ollama | Modelos de pesos abiertos en local | `winget install -e --id Ollama.Ollama` |
+| DBeaver Community | Bases de datos SQL | `winget install -e --id DBeaver.DBeaver.Community` |
+| Remote SSH y Dev Containers | Trabajo en servidores o contenedores | `code --install-extension ms-vscode-remote.remote-ssh` y `ms-vscode-remote.remote-containers` |
+| REST Client | Probar APIs | `code --install-extension humao.rest-client` |
+
+**No instalar sin permiso** en el equipo de la empresa: herramientas de captura de red, gestores de máquinas virtuales y otros agentes de IA además del permitido.
+
 ## Paso 1. Preferencias (todos los agentes)
 
 Añade el contenido de `preferencias.md` al fichero de instrucciones **de usuario** (no al del repositorio de la empresa). Si el fichero ya existe, añade al final; no borres lo que hay.
