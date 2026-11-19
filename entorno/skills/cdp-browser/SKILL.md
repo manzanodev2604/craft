@@ -73,3 +73,10 @@ CDP stop                       # closes this session's hidden tab (stays connect
 - Never show anything to the user or take focus: no new windows, no visible tabs, no `Target.activateTarget`/`bringToFront`. Never close the user's browser or their tabs. Never `taskkill` Brave or Chrome. Run `CDP stop` when a browsing task is finished.
 - Security: the daemon only obeys requests carrying the per-start secret in `%TEMP%\cdp-browser\token-<port>` (dir ACL: user + SYSTEM only) and rejects web pages (Origin/Host checks). Any other program connecting to the browser triggers the browser's own "Allow remote debugging?" prompt, which only gets auto-accepted while this daemon connects. Residual: a malicious program already running as this Windows user can still read the token or run this CLI.
 - Errors print `ERR <message>` with exit code 1. `text` with a missing selector prints `NOT FOUND`.
+
+## Cómo quiere Ismael que se trabaje (de sus sesiones, 19/11/2026)
+
+- Enviar en su nombre: borrador primero y su visto bueno; después enviar sin volver a parar. Comprobar el título del chat antes de escribir; no repetir un mensaje al mismo contacto; solo los chats del tema. WhatsApp: `node ~/Desktop/hands/wa.mjs` (turno, no molestar, deja la pestaña como estaba), no JS propio.
+- Compras: preparar la cesta; el pago y los inicios de sesión los hace él.
+- Si una web no funciona en pestaña de fondo (anti-robot, audios, clics que no registran), abrir una pestaña visible normal (`Target.createTarget`, sin robar foco) en vez de rendirse. Enseñarle lo encontrado si lo pide. No cerrar pestañas suyas.
+- No dejar tareas a medias ni pedirle lo que la herramienta puede hacer sola.
