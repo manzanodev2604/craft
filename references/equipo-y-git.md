@@ -7,7 +7,7 @@ Cómo trabajar en un repositorio compartido: qué se queda en local, qué se sub
 ## Índice
 
 1. Lo que nunca sale del ordenador
-2. Una rama por tarea
+2. Pocas ramas y de vida corta
 3. Qué entra en cada commit
 4. Cuándo se sube
 5. La pull request
@@ -34,19 +34,25 @@ Por qué: el equipo no ha pedido esos ficheros. Un `CLAUDE.md` subido cambia có
 
 **Señalar siempre:** cualquier fichero del agente que ya esté en el historial del repositorio (alguien lo subió antes); no lo borres, pregunta.
 
-## 2. Una rama por tarea
+## 2. Pocas ramas y de vida corta
 
 **Por defecto:**
 1. Antes de empezar: `git switch main && git pull --ff-only` (o la rama base que digan las normas).
-2. Rama nueva con el nombre que pidan las normas; si no dicen nada, `tipo/ticket-descripcion-corta` (`feat/123-exportar-csv`, `fix/124-fecha-utc`).
-3. Una tarea, una rama. Si aparece otra cosa por el camino, se anota en «Pendiente» y va en otra rama.
-4. Nunca se trabaja ni se hace commit directamente en `main`, `master` o `develop`.
+2. Una rama por tarea, con el nombre que pidan las normas; si no dicen nada, `tipo/ticket-descripcion-corta` (`feat/123-exportar-csv`, `fix/124-fecha-utc`).
+3. **Vida corta:** se fusiona en uno a tres días. Si la tarea es más larga, se parte en PR pequeñas que se fusionan una tras otra (con un interruptor de funcionalidad si algo no debe verse aún), no en una rama que vive semanas.
+4. **En el remoto, solo lo que está en revisión.** La rama vive en local hasta que se abre su PR; las ramas locales no molestan a nadie. Como regla, no más de una o dos ramas tuyas a la vez en el remoto.
+5. Lo que aparece por el camino se anota en «Pendiente» o en un ticket; no se crea rama hasta que alguien empieza a trabajar en ello.
+6. **Tras fusionar, se borra** la rama remota (o la borra el ajuste automático del repositorio) y la local: `git switch main && git pull --ff-only && git branch -d <rama> && git fetch --prune`.
+7. Nada de ramas personales permanentes (`nombre-dev`) ni ramas de integración propias.
+8. Nunca se trabaja ni se hace commit directamente en `main`, `master` o `develop`.
 
-Por qué: una rama con una sola cosa se revisa rápido y se puede descartar sin arrastrar nada.
+Por qué: el problema no es cuántas ramas se crean, sino cuánto viven. Una rama corta se revisa rápido, apenas tiene conflictos y desaparece; una larga se aleja de `main` y acaba en una fusión difícil que bloquea a los demás.
 
-**Cambiar si:** el repositorio es solo del usuario y no usa ramas (por ejemplo, sus propios proyectos personales).
+**Cambiar si:** las normas fijan otro modelo de ramas (por ejemplo, GitFlow con `develop` y `release/*`); se sigue el suyo. O el repositorio es solo del usuario y no usa ramas.
 
-**Verificar:** `git branch --show-current` no es la rama principal antes del primer commit.
+**Verificar:** antes del primer commit, `git branch --show-current` no es la rama principal. Al cerrar la tarea, `git branch --merged main` no lista ramas tuyas ya fusionadas y `git branch -r` no tiene ramas tuyas sin PR abierta.
+
+**Señalar siempre:** una rama tuya que pasa de tres días sin fusionar, y por qué.
 
 ## 3. Qué entra en cada commit
 
