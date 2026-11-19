@@ -10,7 +10,7 @@ Procedimiento para que el agente deje en otra máquina la misma configuración q
 | `claude-settings.json` | Ajustes de Claude Code que se fusionan con `~/.claude/settings.json` |
 | `statusline.ps1` | Línea de estado de Claude Code (necesita PowerShell 7, `pwsh`): contexto sobre la ventana de autocompactado (`$CTX_SIZE`, 300.000, igual que `modelSettings.autoCompactWindow`; si cambias uno, cambia el otro), uso de 5 horas con tiempo restante y hora local del reinicio, y uso de 7 días |
 | `hooks/titulo-sesion.mjs` | Hook de Claude Code: si la sesión empieza solo con `/craft`, la titula con la carpeta y después con el objetivo, nunca con el nombre de la skill (necesita `node`; comprobación: `node titulo-sesion.mjs --test`) |
-| `hooks/craft-siempre.mjs` | Hook de Claude Code: carga esta guía entera al abrir la sesión (y tras compactar) y recuerda en cada mensaje que está activa, sin depender de que el modelo la elija (necesita `node`; comprobación: `node craft-siempre.mjs --test`). Con él sobra la línea en `AGENTS.md` del proyecto; en otros agentes, sigue haciendo falta |
+| `hooks/craft-siempre.mjs` | Hook de Claude Code: carga esta guía entera al abrir la sesión (y tras compactar) y recuerda en cada mensaje que está activa, sin depender de que el modelo la elija (necesita `node`; comprobación: `node craft-siempre.mjs --test`). En otros agentes, sin hooks, hace falta la línea de activación en su fichero de instrucciones de usuario (ver `README.md`), nunca en el del repositorio |
 | `hooks/leo-indice.mjs` | Hook de Claude Code: al abrir sesión en un repo git, lanza `leo-mcp index` en segundo plano para que el aviso antes de editar funcione desde el primer cambio (no bloquea; sin leo-mcp no hace nada) |
 | `hooks/git-guarda.mjs` | Hook de Claude Code antes de cada comando: bloquea commits y push que lleven ficheros del agente o borradores (`CLAUDE.md`, `AGENTS.md`, `.mcp.json`, `.claude/`, `.craft/`), `git add -A`/`.`, `--no-verify` y `push --force` a la rama principal; pide confirmación en todo push, PR o fusión. Excepción por repo: `git config craft.subirAgente true`. Comprobación: `node git-guarda.mjs --test`. Ver `references/equipo-y-git.md` |
 | `git-ignore-global` | Se añade a `~/.config/git/ignore`: lo mismo queda fuera de `git status` en cualquier repo sin tocar su `.gitignore` |
@@ -62,6 +62,15 @@ Si el repositorio está en GitLab, `glab` (`winget install -e --id GLab.GLab`) e
 | k6 | Pruebas de carga de un servicio (ver `references/verificacion.md`, apartado 9) | `winget install -e --id GrafanaLabs.k6` |
 
 **No instalar sin permiso** en el equipo de la empresa: herramientas de captura de red, gestores de máquinas virtuales y otros agentes de IA además del permitido.
+
+## Paso 0c. Identidad de git y cuentas
+
+Los commits del trabajo van con la identidad de la empresa, nunca con la cuenta personal.
+1. Pregunta al usuario su nombre y su correo de la empresa; no los supongas.
+2. `git config --global user.name "<nombre>"` y `git config --global user.email "<correo de la empresa>"`. Si en la máquina conviven repos personales, ponlos solo en esos repos con `git config` local.
+3. Ajustes de equipo: `git config --global pull.ff only`, `git config --global fetch.prune true` (borra las referencias de ramas ya eliminadas del remoto) y `git config --global init.defaultBranch main`.
+4. Acceso al servidor de la empresa (GitHub, GitLab u otro): lo inicia el usuario, no el agente, porque pide credenciales. Sugiere `! gh auth login` o `! glab auth login` según el servidor. Sin cuentas personales en esa máquina.
+5. Comprueba: `git config --global --get user.email` y `gh auth status` (o `glab auth status`).
 
 ## Paso 1. Preferencias (todos los agentes)
 
@@ -210,5 +219,6 @@ Si el escritorio ya tiene ficheros, propón a qué carpeta va cada uno y pide un
 
 1. Reinicia el agente y comprueba: `claude plugin list`, `claude mcp list`, y que la sesión arranca con los hooks de caveman y ponytail sin error.
 2. Pide una tarea trivial y mira que responde en español, corto, y que un commit sale sin coautoría.
-3. Auditoría de la configuración con AgentShield, una vez y solo en modo estático (sin `--opus`, que manda datos fuera; sin `--fix` ni `--sandbox`, que tocan o ejecutan la configuración). Versión fija en una carpeta aparte: `npm i --ignore-scripts ecc-agentshield@1.6.0` y `npx agentshield scan --path <copia>`. La 1.6.0 falla con un enlace (junction) dentro de `~/.claude` (`EISDIR`): escanea una copia hecha con `cp -rL` de `settings.json`, `CLAUDE.md`, `agents/` y `skills/`. Casi todo lo que marca es la plantilla "Missing prompt defense" en cada `.md`; lo que importa son los apartados `permissions`, `hooks`, `mcp` y `secrets`. Una máquina de empresa debería salir con lista `deny` (secretos, `.env`, `git push --force`) y sin `defaultMode` que salte confirmaciones.
-4. Informe: qué se instaló, qué no y por qué (política, agente sin soporte, falta `node` o `pwsh`), y qué choca con las normas de la empresa.
+3. Comprueba la protección de git: `node ~/.claude/skills/craft/entorno/hooks/git-guarda.mjs --test` da `ok`, y en un repositorio de prueba `git check-ignore -v .craft/x` muestra el ignorado global.
+4. Auditoría de la configuración con AgentShield, una vez y solo en modo estático (sin `--opus`, que manda datos fuera; sin `--fix` ni `--sandbox`, que tocan o ejecutan la configuración). Versión fija en una carpeta aparte: `npm i --ignore-scripts ecc-agentshield@1.6.0` y `npx agentshield scan --path <copia>`. La 1.6.0 falla con un enlace (junction) dentro de `~/.claude` (`EISDIR`): escanea una copia hecha con `cp -rL` de `settings.json`, `CLAUDE.md`, `agents/` y `skills/`. Casi todo lo que marca es la plantilla "Missing prompt defense" en cada `.md`; lo que importa son los apartados `permissions`, `hooks`, `mcp` y `secrets`. Una máquina de empresa debería salir con lista `deny` (secretos, `.env`, `git push --force`) y sin `defaultMode` que salte confirmaciones.
+5. Informe: qué se instaló, qué no y por qué (política, agente sin soporte, falta `node` o `pwsh`), y qué choca con las normas de la empresa.
