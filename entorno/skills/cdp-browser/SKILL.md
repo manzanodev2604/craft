@@ -80,3 +80,4 @@ CDP stop                       # closes this session's hidden tab (stays connect
 - Compras: preparar la cesta; el pago y los inicios de sesión los hace él.
 - Si una web no funciona en pestaña de fondo (anti-robot, audios, clics que no registran), abrir una pestaña visible normal (`Target.createTarget`, sin robar foco) en vez de rendirse. Enseñarle lo encontrado si lo pide. No cerrar pestañas suyas.
 - No dejar tareas a medias ni pedirle lo que la herramienta puede hacer sola.
+- Borrar mensajes de WhatsApp: `node ~/Desktop/hands/wa.mjs borrar "<chat>" <regex>` (lista; `WA_BORRAR=1` borra). Nunca `scrollIntoView` en el chat (lo desplaza en horizontal), nunca Escape sin modo selección (cierra el chat), nunca recargar WhatsApp para «arreglar» algo (pierde el historial en la web). No dar nada por hecho sin recontar.
