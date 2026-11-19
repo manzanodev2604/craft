@@ -22,7 +22,7 @@ Sigue estos cinco pasos en orden, también en cambios pequeños.
 2. **Planificar.**
    1. Si el cambio cabe en una frase, no escribas plan; las pruebas primero y las cinco paradas siguen valiendo.
    2. El plan escrito es para funcionalidades nuevas. En una corrección, la especificación es una prueba que reproduce el fallo y falla antes de arreglarlo; en una refactorización, la prueba diferencial de `references/verificacion.md`. Por qué: ahí un documento cuesta más de lo que aporta y una prueba no se queda vieja.
-   3. En una funcionalidad nueva que no cabe en una frase, escribe el plan con `assets/plan.md`: objetivo, criterios Dado/Cuando/Entonces, fuera de alcance, unidades y riesgos.
+   3. En una funcionalidad nueva que no cabe en una frase, escribe el plan con `assets/plan.md`: objetivo, criterios Dado/Cuando/Entonces, fuera de alcance, unidades y riesgos. Planes, progreso y borradores van en `.craft/` en la raíz del repositorio, que nunca se sube.
    4. Las decisiones difíciles de deshacer (modelo de datos, proveedor, formato, esquema) van en un ADR con `assets/adr.md`.
 3. **Hacer en unidades pequeñas.**
    1. Escribe las pruebas desde la especificación **antes** que el código y míralas fallar. Por qué: una prueba escrita después de ver el código repite sus mismos errores.
@@ -54,7 +54,7 @@ Detente en cada una aunque nadie lo pida.
    4. Si no puedes esperar la respuesta, escribe primero la pregunta, sigue con la opción que conserva el comportamiento actual y márcala como suposición.
 
    Por qué: una decisión de comportamiento tomada en silencio llega a producción sin que nadie la haya elegido.
-4. **Antes de una acción irreversible o hacia fuera**, para. Son acciones de este tipo: borrar, sobrescribir, publicar, desplegar, gastar y enviar datos fuera. Presenta qué harías, las opciones, tu recomendación y una pregunta. Si el `README`, las normas o la petición indican un entorno sin conexión o sensible, cualquier consulta a internet o a servicios externos (búsquedas, descargas, registros de paquetes o de modelos) también es una acción hacia fuera: no la intentes; trabaja con lo que hay en local y anota en «Pendiente» qué haría falta de fuera y por qué. Por qué: estas acciones no se deshacen, y el intento ya puede sacar datos del perímetro.
+4. **Antes de una acción irreversible o hacia fuera**, para. Son acciones de este tipo: borrar, sobrescribir, publicar, desplegar, gastar y enviar datos fuera. Presenta qué harías, las opciones, tu recomendación y una pregunta. En git: push, pull request y fusiones solo cuando el usuario lo pide para esa tarea, y nunca suben ficheros del agente ni borradores (`references/equipo-y-git.md`). Si el `README`, las normas o la petición indican un entorno sin conexión o sensible, cualquier consulta a internet o a servicios externos (búsquedas, descargas, registros de paquetes o de modelos) también es una acción hacia fuera: no la intentes; trabaja con lo que hay en local y anota en «Pendiente» qué haría falta de fuera y por qué. Por qué: estas acciones no se deshacen, y el intento ya puede sacar datos del perímetro.
 5. **Antes de decir "hecho".** Comprueba que:
    1. cada criterio está comprobado con evidencia de ahora;
    2. la suite completa está en verde;
@@ -84,6 +84,7 @@ Lee una referencia solo cuando la tarea la toque, y solo la que toque; no las re
 | Si la tarea... | Lee |
 |---|---|
 | Escribe o cambia código, pruebas o cálculos; o hay que comprobar un resultado | `references/verificacion.md` |
+| Hace commits, ramas, push o pull requests, o el repositorio es de un equipo | `references/equipo-y-git.md` |
 | Depende de cómo trabaja el agente: inventario de herramientas, choques, plan entre sesiones, contexto, subagentes | `references/trabajo-con-agentes.md` |
 | Ocurre sin conexión, en defensa, en el sector público o con datos sensibles; o añade dependencias, modelos o imágenes | `references/entornos-restringidos.md` |
 | Usa un LLM: chatbot, RAG, extracción, agente, evaluación, coste de llamadas | `references/ia.md` |
@@ -104,6 +105,7 @@ Repásala antes del informe final; no hace falta copiarla.
 [ ] Usos del código compartido citados con fichero:línea
 [ ] Pruebas escritas desde la especificación y vistas en rojo antes del código
 [ ] Ninguna acción irreversible o hacia fuera sin permiso
+[ ] Commits solo con ficheros de la tarea; nada del agente ni borradores; sin push no pedido
 [ ] Suite completa en verde, ejecutada ahora
 [ ] Ejecutado como se ejecutará de verdad
 [ ] Plan y documentación al día con el código

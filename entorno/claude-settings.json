@@ -78,6 +78,18 @@
           }
         ]
       }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/skills/craft/entorno/hooks/git-guarda.mjs\"",
+            "timeout": 10
+          }
+        ]
+      }
     ]
   },
   "skillOverrides": {

@@ -12,6 +12,8 @@ Procedimiento para que el agente deje en otra máquina la misma configuración q
 | `hooks/titulo-sesion.mjs` | Hook de Claude Code: si la sesión empieza solo con `/craft`, la titula con la carpeta y después con el objetivo, nunca con el nombre de la skill (necesita `node`; comprobación: `node titulo-sesion.mjs --test`) |
 | `hooks/craft-siempre.mjs` | Hook de Claude Code: carga esta guía entera al abrir la sesión (y tras compactar) y recuerda en cada mensaje que está activa, sin depender de que el modelo la elija (necesita `node`; comprobación: `node craft-siempre.mjs --test`). Con él sobra la línea en `AGENTS.md` del proyecto; en otros agentes, sigue haciendo falta |
 | `hooks/leo-indice.mjs` | Hook de Claude Code: al abrir sesión en un repo git, lanza `leo-mcp index` en segundo plano para que el aviso antes de editar funcione desde el primer cambio (no bloquea; sin leo-mcp no hace nada) |
+| `hooks/git-guarda.mjs` | Hook de Claude Code antes de cada comando: bloquea commits y push que lleven ficheros del agente o borradores (`CLAUDE.md`, `AGENTS.md`, `.mcp.json`, `.claude/`, `.craft/`), `git add -A`/`.`, `--no-verify` y `push --force` a la rama principal; pide confirmación en todo push, PR o fusión. Excepción por repo: `git config craft.subirAgente true`. Comprobación: `node git-guarda.mjs --test`. Ver `references/equipo-y-git.md` |
+| `git-ignore-global` | Se añade a `~/.config/git/ignore`: lo mismo queda fuera de `git status` en cualquier repo sin tocar su `.gitignore` |
 | `skills/trabajo-diario/` | Skill propia de oficina: actas que solo dan por decidido lo acordado, ponerse al día en hilos, comparar versiones de un documento y redactar según quién lo recibe; siempre citando la fuente y marcando `[FALTA]` en vez de inventar. Se carga sola |
 | `mods/prompt-mejorado/` | Mod de Claude Code: tras cada mensaje del usuario, Haiku lo reescribe como prompt claro (objetivo, contexto, restricciones, cómo saber que está bien; `[FALTA]` en lo que no se dijo) y lo muestra en gris debajo. Solo se ve: el modelo trabaja con el texto original. Una llamada a Haiku por mensaje de 15 caracteres o más |
 | `skills/cdp-browser/` | Skill propia de automatización del navegador real por CDP (Windows, Node 22+). Las reglas de WhatsApp usan los scripts de `~/Desktop/hands` (repositorio privado del usuario, no incluido en craft): sin él, esas reglas no aplican |
@@ -116,8 +118,9 @@ Cada skill visible cuesta contexto en todos los mensajes, se use o no. Las que s
 ## Paso 3. Ajustes (Claude Code)
 
 1. Fusiona `claude-settings.json` con `~/.claude/settings.json`: las claves del fichero ganan, las demás se conservan. No copies permisos ni modos que salten confirmaciones; en una máquina de empresa los decide el usuario.
-2. El hook de título ya va en `claude-settings.json` y apunta a la skill instalada en `~/.claude/skills/craft`; si la skill está en otra ruta, ajusta `hooks.UserPromptSubmit`.
-3. Copia `statusline.ps1` a `~/.claude/statusline.ps1` y pon en `statusLine.command` la **ruta absoluta** (Windows no expande `~` ahí). Sin `pwsh`, quita `statusLine`.
+2. Ignorado global de git: `mkdir -p ~/.config/git && cat entorno/git-ignore-global >> ~/.config/git/ignore` (si `git config --global core.excludesFile` apunta a otro fichero, añádelo a ese). Comprueba con `git check-ignore -v .craft/x` dentro de cualquier repo.
+3. El hook de título y `git-guarda` ya van en `claude-settings.json` y apuntan a la skill instalada en `~/.claude/skills/craft`; si la skill está en otra ruta, ajusta las rutas de `hooks`.
+4. Copia `statusline.ps1` a `~/.claude/statusline.ps1` y pon en `statusLine.command` la **ruta absoluta** (Windows no expande `~` ahí). Sin `pwsh`, quita `statusLine`.
 
 ## Paso 4. Skills
 

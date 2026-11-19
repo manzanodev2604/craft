@@ -1,0 +1,8 @@
+# Ignorado global de git (~/.config/git/ignore): lo del agente y los borradores nunca entran en un repo.
+# Solo afecta a ficheros sin seguimiento; para subir uno a propósito: git add -f <fichero>
+.craft/
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+AGENTS.md
+.mcp.json
