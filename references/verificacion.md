@@ -12,6 +12,7 @@ Cómo comprobar que lo hecho funciona antes de decirlo. Cada apartado da el valo
 6. Probar el artefacto como se ejecuta de verdad
 7. Modelo como juez: solo para lo que no se ejecuta
 8. Qué decir que no se comprobó
+9. Pruebas de carga
 
 ---
 
@@ -157,3 +158,17 @@ Por qué: lo que no se comprobó y no se dice parece hecho, y quien lo recibe no
 **Verificar:** cada punto "no comprobado" lleva el motivo y el comando o paso para comprobarlo.
 
 **Señalar siempre:** si todo se comprobó, cómo se sabe; "nada pendiente" sin evidencia no vale.
+
+## 9. Pruebas de carga
+
+**Por defecto:** todo servicio que vaya a tener usuarios a la vez pasa una prueba de carga antes de entregarlo y después de cada cambio que pueda afectar al rendimiento (consultas, caché, colas, llamadas a modelos).
+1. Antes de lanzarla, fija el umbral de aprobado: por ejemplo, p95 por debajo de X ms y menos del 1 % de errores con N usuarios a la vez. Sácalo de la estimación del paso 1 de `SKILL.md`, no del resultado.
+2. Escenario realista: el recorrido de un usuario (no un solo endpoint en bucle), datos de volumen parecido al real y subida gradual de usuarios hasta el pico esperado y algo más.
+3. Herramienta: la que ya use el proyecto; si no hay, k6 (un solo binario, scripts en JavaScript). En proyectos Python vale Locust.
+4. Dónde: en local o en el entorno de pruebas (staging). **Nunca contra producción ni contra servicios de terceros sin permiso**: en la práctica es un ataque de denegación de servicio y puede generar coste. Es una acción hacia fuera (parada 4).
+
+**Cambiar si:** el servicio es de un solo usuario o por lotes sin concurrencia; entonces basta con medir el tiempo de un lote real.
+
+**Verificar:** el resultado frente al umbral fijado antes, con el comando y la salida en el informe. Si falla, localiza el cuello de botella (base de datos, CPU, memoria, servicio externo) antes de tocar código.
+
+**Señalar siempre:** rendimiento estimado sin medir, pruebas con datos o volúmenes de juguete, y llamadas a servicios de pago (APIs de modelos) dentro de la prueba sin un tope de gasto.

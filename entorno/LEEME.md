@@ -57,6 +57,7 @@ Si el repositorio está en GitLab, `glab` (`winget install -e --id GLab.GLab`) e
 | DBeaver Community | Bases de datos SQL | `winget install -e --id DBeaver.DBeaver.Community` |
 | Remote SSH y Dev Containers | Trabajo en servidores o contenedores | `code --install-extension ms-vscode-remote.remote-ssh` y `ms-vscode-remote.remote-containers` |
 | REST Client | Probar APIs | `code --install-extension humao.rest-client` |
+| k6 | Pruebas de carga de un servicio (ver `references/verificacion.md`, apartado 9) | `winget install -e --id GrafanaLabs.k6` |
 
 **No instalar sin permiso** en el equipo de la empresa: herramientas de captura de red, gestores de máquinas virtuales y otros agentes de IA además del permitido.
 
