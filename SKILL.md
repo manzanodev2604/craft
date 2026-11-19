@@ -21,8 +21,9 @@ Sigue estos cinco pasos en orden, también en cambios pequeños.
    5. Escribe las suposiciones. Si la petición admite dos lecturas que cambian el comportamiento, aplica la parada 3 antes de seguir.
 2. **Planificar.**
    1. Si el cambio cabe en una frase, no escribas plan; las pruebas primero y las cinco paradas siguen valiendo.
-   2. Si no, escribe el plan con `assets/plan.md`: objetivo, criterios Dado/Cuando/Entonces, fuera de alcance, unidades y riesgos.
-   3. Las decisiones difíciles de deshacer (modelo de datos, proveedor, formato, esquema) van en un ADR con `assets/adr.md`.
+   2. El plan escrito es para funcionalidades nuevas. En una corrección, la especificación es una prueba que reproduce el fallo y falla antes de arreglarlo; en una refactorización, la prueba diferencial de `references/verificacion.md`. Por qué: ahí un documento cuesta más de lo que aporta y una prueba no se queda vieja.
+   3. En una funcionalidad nueva que no cabe en una frase, escribe el plan con `assets/plan.md`: objetivo, criterios Dado/Cuando/Entonces, fuera de alcance, unidades y riesgos.
+   4. Las decisiones difíciles de deshacer (modelo de datos, proveedor, formato, esquema) van en un ADR con `assets/adr.md`.
 3. **Hacer en unidades pequeñas.**
    1. Escribe las pruebas desde la especificación **antes** que el código y míralas fallar. Por qué: una prueba escrita después de ver el código repite sus mismos errores.
    2. Una unidad cada vez, terminada y en verde antes de la siguiente; un commit por unidad si las normas lo permiten.
@@ -59,7 +60,8 @@ Detente en cada una aunque nadie lo pida.
    2. la suite completa está en verde;
    3. lo entregado se ha ejecutado como se ejecutará;
    4. ninguna prueba existente se ha modificado, desactivado ni borrado para que pase (añadir pruebas nuevas sí está bien);
-   5. el informe dice qué no se comprobó y por qué.
+   5. el plan, el ADR y la documentación que el cambio toca siguen describiendo el código; si no, se corrigen o se borran;
+   6. el informe dice qué no se comprobó y por qué.
 
    Por qué: el informe del agente no es una prueba; lo que no se comprobó y no se dice parece hecho.
 
@@ -104,5 +106,6 @@ Repásala antes del informe final; no hace falta copiarla.
 [ ] Ninguna acción irreversible o hacia fuera sin permiso
 [ ] Suite completa en verde, ejecutada ahora
 [ ] Ejecutado como se ejecutará de verdad
+[ ] Plan y documentación al día con el código
 [ ] Informe con "No comprobado y por qué" y "Herramientas del agente"
 ```
