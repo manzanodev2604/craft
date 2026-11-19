@@ -75,7 +75,7 @@ Sin abstracciones de un solo uso, sin andamiaje "para luego", diff mínimo, borr
 
 ## Repartir trabajo por modelo
 
-Para gastar menos límite de uso. Solo ahorra con mucho material; en preguntas cortas, búsquedas de un dato o decisiones entre pocas opciones el ahorro es cero y no se delega.
+Para gastar menos límite de uso (esta regla cuenta como petición expresa de usar subagentes y de fijar su esfuerzo en estos casos). Solo ahorra con mucho material; en preguntas cortas, búsquedas de un dato o decisiones entre pocas opciones el ahorro es cero y no se delega.
 
 1. Decide sin abrir el material (leerlo ya es pagarlo al precio del modelo principal); como mucho, un `wc -w`.
 2. Más de ~5.000 palabras que hay que leer enteras (no basta con buscar unas líneas):
@@ -88,7 +88,7 @@ Para gastar menos límite de uso. Solo ahorra con mucho material; en preguntas c
 ## Herramientas, si están instaladas
 
 - **Grafo de código (leo-mcp):** en cualquier pregunta sobre código, la primera llamada es `get_context` con la tarea. Para preguntas estructurales, `graph`: `where` (dónde se define), `who_calls` (quién llama), `impact` (qué rompe un cambio), `trace` (camino de A a B), `guard` (impacto y qué no tiene test). Úsalo antes que grep o leer ficheros enteros; grep solo para texto literal. Antes de editar código compartido, `guard`. Es un grafo estático: llamadas por colas, WebSockets, subprocesos o nombres construidos con texto no aparecen; dilo en el informe. Si solo está codegraph, el mismo criterio con sus herramientas.
-- **Navegador:** primero la skill `cdp-browser` (navegador real del usuario por CDP), después la extensión del navegador del agente, y Playwright solo si se pide. Antes de enviar formularios, comprar o publicar, preguntar. No cerrar las pestañas del usuario.
+- **Navegador:** primero la skill `cdp-browser` (navegador real del usuario por CDP: Brave y, si falla, Chrome), después la extensión del navegador del agente, y Playwright MCP solo si se pide o hace falta su árbol de accesibilidad o su emulación. No usar Stagehand ni browser-use. Antes de enviar formularios, comprar o publicar, preguntar. No cerrar las pestañas del usuario.
 - **Método:** en tareas de código, seguir la skill `craft`.
 - **Seguridad:** ante cualquier pregunta o revisión de seguridad (autenticación, entrada de usuario, SQL, secretos, permisos, dependencias), cargar la skill `security-audit` antes de contestar, aunque el fallo parezca obvio. El flujo completo de 6 fases solo si se pide una auditoría entera.
 - **Decisiones caras de revertir** (arquitectura, proveedor, cambio de rumbo): si el usuario dice "pásalo por el consejo", usar la skill `llm-council`. No usarla por iniciativa propia: cada consulta son 11 subagentes.
