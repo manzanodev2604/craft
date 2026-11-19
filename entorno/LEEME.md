@@ -8,13 +8,13 @@ Procedimiento para que el agente deje en otra máquina la misma configuración q
 |---|---|
 | `preferencias.md` | Cómo trabaja y quiere que se le responda. Va al fichero de instrucciones de usuario del agente |
 | `claude-settings.json` | Ajustes de Claude Code que se fusionan con `~/.claude/settings.json` |
-| `statusline.ps1` | Línea de estado de Claude Code (necesita PowerShell 7, `pwsh`) |
+| `statusline.ps1` | Línea de estado de Claude Code (necesita PowerShell 7, `pwsh`): contexto sobre la ventana de autocompactado (`$CTX_SIZE`, 300.000, igual que `modelSettings.autoCompactWindow`; si cambias uno, cambia el otro), uso de 5 horas con tiempo restante y hora local del reinicio, y uso de 7 días |
 | `hooks/titulo-sesion.mjs` | Hook de Claude Code: si la sesión empieza solo con `/craft`, la titula con la carpeta y después con el objetivo, nunca con el nombre de la skill (necesita `node`; comprobación: `node titulo-sesion.mjs --test`) |
 | `hooks/craft-siempre.mjs` | Hook de Claude Code: carga esta guía entera al abrir la sesión (y tras compactar) y recuerda en cada mensaje que está activa, sin depender de que el modelo la elija (necesita `node`; comprobación: `node craft-siempre.mjs --test`). Con él sobra la línea en `AGENTS.md` del proyecto; en otros agentes, sigue haciendo falta |
 | `hooks/leo-indice.mjs` | Hook de Claude Code: al abrir sesión en un repo git, lanza `leo-mcp index` en segundo plano para que el aviso antes de editar funcione desde el primer cambio (no bloquea; sin leo-mcp no hace nada) |
 | `skills/trabajo-diario/` | Skill propia de oficina: actas que solo dan por decidido lo acordado, ponerse al día en hilos, comparar versiones de un documento y redactar según quién lo recibe; siempre citando la fuente y marcando `[FALTA]` en vez de inventar. Se carga sola |
 | `mods/prompt-mejorado/` | Mod de Claude Code: tras cada mensaje del usuario, Haiku lo reescribe como prompt claro (objetivo, contexto, restricciones, cómo saber que está bien; `[FALTA]` en lo que no se dijo) y lo muestra en gris debajo. Solo se ve: el modelo trabaja con el texto original. Una llamada a Haiku por mensaje de 15 caracteres o más |
-| `skills/cdp-browser/` | Skill propia de automatización del navegador real por CDP (Windows, Node 22+) |
+| `skills/cdp-browser/` | Skill propia de automatización del navegador real por CDP (Windows, Node 22+). Las reglas de WhatsApp usan los scripts de `~/Desktop/hands` (repositorio privado del usuario, no incluido en craft): sin él, esas reglas no aplican |
 
 ## Paso 0. Antes de instalar nada
 

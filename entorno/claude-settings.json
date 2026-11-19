@@ -34,7 +34,8 @@
     "security-guidance@claude-plugins-official": true,
     "pr-review-toolkit@claude-plugins-official": true,
     "commit-commands@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": true
+    "frontend-design@claude-plugins-official": true,
+    "prompt-mejorado@craft-mods": true
   },
   "hooks": {
     "UserPromptSubmit": [
@@ -80,7 +81,13 @@
     ]
   },
   "skillOverrides": {
+    "frontend-design": "off",
     "craft": "user-invocable-only",
     "llm-council": "name-only"
+  },
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "autoCompactWindow": 300000
+    }
   }
 }

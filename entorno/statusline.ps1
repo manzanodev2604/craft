@@ -7,7 +7,7 @@ $d   = $raw | ConvertFrom-Json
 
 $MODEL     = [string]($d.model.display_name                          ?? "Unknown")
 $DIR       = [string]($d.workspace.current_dir                       ?? ".")
-$CTX_SIZE  = [long]  ($d.context_window.context_window_size          ?? 200000)
+$CTX_SIZE  = 300000  # ventana de autocompactado (/context); el JSON trae 1M. Cambiar si cambia ese límite
 $CTX_USAGE = $d.context_window.current_usage
 $STYLE     = [string]($d.output_style.name                           ?? "")
 $FIVE_PCT  = $d.rate_limits.five_hour.used_percentage
@@ -98,8 +98,8 @@ if ($null -ne $FIVE_PCT -and "$FIVE_PCT" -ne "") {
         $dt = [DateTimeOffset]::FromUnixTimeSeconds([long]$FIVE_RST)
         $s  = ($dt - [DateTimeOffset]::UtcNow).TotalSeconds
         if ($s -gt 0) {
-            $h = [int]($s / 3600); $m = [int](($s % 3600) / 60)
-            $remain = " ${CDK}(${h}h${m}m)${R}"
+            $h = [Math]::Floor($s / 3600); $m = [Math]::Floor(($s % 3600) / 60)
+            $remain = " ${CDK}(${h}h${m}m, $($dt.ToLocalTime().ToString('HH:mm')))${R}"
         }
     }
     $LINE2 = "${CTX_D} ${CDK}|${R} ${CGR}5H${R} $(bar $f5 8 $c5) ${c5}${B}${f5}%${R}${remain} ${CDK}|${R} ${CGR}7D${R} $(bar $f7 8 $c7) ${c7}${B}${f7}%${R}"
