@@ -6,7 +6,7 @@
 //   node apuntes-sesion.mjs generar <resumen.txt> <repo>  -> lo que corre en segundo plano
 //   node apuntes-sesion.mjs --test
 // Errores: <temp>/craft-apuntes.log
-import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, statSync, appendFileSync, rmSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, mkdtempSync, existsSync, readdirSync, statSync, appendFileSync, rmSync } from 'node:fs';
 import { execFileSync, spawn } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -104,7 +104,6 @@ function generar(fichero, repo) {
   let f = path.join(dir, `${n}.md`);
   for (let i = 2; existsSync(f); i++) f = path.join(dir, `${n}-${i}.md`);
   writeFileSync(f, salida.replace(/^TEMA:.*\r?\n+/m, '').trim() + '\n');
-  rmSync(fichero, { force: true });
   log(`ok ${f}`);
 }
 
@@ -125,6 +124,7 @@ if (modo === '--test') {
   console.log('ok');
 } else if (modo === 'generar') {
   try { generar(process.argv[3], process.argv[4]); } catch (e) { log(`error ${process.argv[4]}: ${e.message}`); }
+  finally { rmSync(path.dirname(process.argv[3]), { recursive: true, force: true }); } // también si falla
 } else if (!process.env.CRAFT_APUNTES) {
   try {
     const e = JSON.parse(readFileSync(0, 'utf8') || '{}');
@@ -133,8 +133,9 @@ if (modo === '--test') {
     if (repo && e.transcript_path && existsSync(e.transcript_path)) {
       const r = resume(readFileSync(e.transcript_path, 'utf8').split('\n'));
       if (r.merece) {
-        const f = path.join(tmpdir(), `craft-apuntes-${e.session_id || Date.now()}.json`);
-        writeFileSync(f, JSON.stringify({ texto: r.texto, inicio: r.inicio }));
+        // carpeta privada (0700) y fichero 0600: el resumen lleva la conversación y /tmp puede ser compartido
+        const f = path.join(mkdtempSync(path.join(tmpdir(), 'craft-apuntes-')), 'resumen.json');
+        writeFileSync(f, JSON.stringify({ texto: r.texto, inicio: r.inicio }), { mode: 0o600, flag: 'wx' });
         spawn(process.execPath, [fileURLToPath(import.meta.url), 'generar', f, repo],
           { detached: true, stdio: 'ignore', windowsHide: true, env: { ...process.env, CRAFT_APUNTES: '1' } }).unref();
       }
