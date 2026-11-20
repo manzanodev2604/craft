@@ -96,8 +96,6 @@ claude plugin install superpowers@claude-plugins-official
 claude plugin install caveman@caveman
 claude plugin install ponytail@ponytail
 claude plugin install security-guidance@claude-plugins-official
-claude plugin install pr-review-toolkit@claude-plugins-official
-claude plugin install commit-commands@claude-plugins-official
 claude plugin install frontend-design@claude-plugins-official
 ```
 
@@ -118,8 +116,6 @@ Cada skill visible cuesta contexto en todos los mensajes, se use o no. Las que s
 | caveman | Respuestas telegráficas, menos tokens | Hooks al arrancar y en cada mensaje (necesita `node`) |
 | ponytail | Construir lo mínimo (la escalera de `preferencias.md`) | Hooks al arrancar y en cada mensaje (necesita `node`) |
 | security-guidance | Avisos de seguridad al editar | Hook en edición |
-| pr-review-toolkit | Agentes de revisión de PR | No |
-| commit-commands | `/commit`, `/commit-push-pr` | No |
 | frontend-design | Diseño de interfaces con criterio | No |
 
 **Otros agentes:** superpowers tiene instalación para Codex, opencode y otros (sigue su README en `github.com/obra/superpowers`). Caveman y ponytail no hacen falta fuera de Claude Code: sus reglas ya están en `preferencias.md`.
@@ -138,9 +134,6 @@ Skills públicas, con la CLI `skills` (instala para varios agentes; confirma las
 ```bash
 npx skills add anthropics/skills --skill frontend-design -g
 npx skills add pbakaus/impeccable -g
-npx skills add vercel-labs/agent-skills --skill web-design-guidelines -g
-npx skills add wshobson/agents --skill tailwind-design-system -g
-npx skills add vercel-labs/skills --skill find-skills -g
 ```
 
 Skills de ingeniería de terceros, con descripción completa (sin `skillOverrides`) para que el agente las cargue solo cuando la tarea lo pide:
@@ -171,7 +164,7 @@ git clone --depth 1 https://github.com/aiwithremy/claude-skills-llm-council ~/.c
 
 Va en `skillOverrides` como `"name-only"` (ya está en `claude-settings.json`): su descripción se dispara con "¿cuál elijo?" y cada consulta lanza 11 subagentes. Se usa diciendo "pásalo por el consejo", solo en decisiones caras de revertir.
 
-No se llevan por defecto (personales, no de trabajo): skills de LinkedIn (`li-*`) y de SEO (`seo-*`). Solo si el usuario las pide.
+No se llevan (sin uso en 30 días al medirlo el 20/11/2026; cada skill, agente o plugin instalado suma tokens a cada petición): `pr-review-toolkit` (el `/code-review` integrado lo cubre), `commit-commands`, `find-skills`, `tailwind-design-system`, `web-design-guidelines`. Tampoco se llevan por defecto (personales, no de trabajo): skills de LinkedIn (`li-*`) y de SEO (`seo-*`). Solo si el usuario las pide.
 
 ## Paso 5. Servidores MCP
 
