@@ -11,6 +11,7 @@ Procedimiento para que el agente deje en otra máquina la misma configuración q
 | `statusline.ps1` | Línea de estado de Claude Code (necesita PowerShell 7, `pwsh`): contexto sobre la ventana de autocompactado (`$CTX_SIZE`, 300.000, igual que `modelSettings.autoCompactWindow`; si cambias uno, cambia el otro), uso de 5 horas con tiempo restante y hora local del reinicio, y uso de 7 días |
 | `hooks/titulo-sesion.mjs` | Hook de Claude Code: si la sesión empieza solo con `/craft`, la titula con la carpeta y después con el objetivo, nunca con el nombre de la skill (necesita `node`; comprobación: `node titulo-sesion.mjs --test`) |
 | `hooks/craft-siempre.mjs` | Hook de Claude Code: carga esta guía entera al abrir la sesión (y tras compactar) y recuerda en cada mensaje que está activa, sin depender de que el modelo la elija (necesita `node`; comprobación: `node craft-siempre.mjs --test`). En otros agentes, sin hooks, hace falta la línea de activación en su fichero de instrucciones de usuario (ver `README.md`), nunca en el del repositorio |
+| `skills-por-tarea.md` | Mapa tarea → skill que `craft-siempre.mjs` añade a la guía al abrir sesión. Permite dejar casi todas las skills en `"name-only"` (sin descripción en cada petición) sin que el agente deje de saber cuándo usarlas. Al instalar o quitar una skill, actualiza su fila |
 | `hooks/leo-indice.mjs` | Hook de Claude Code: al abrir sesión en un repo git, lanza `leo-mcp index` en segundo plano para que el aviso antes de editar funcione desde el primer cambio (no bloquea; sin leo-mcp no hace nada) |
 | `hooks/git-guarda.mjs` | Hook de Claude Code antes de cada comando: bloquea commits y push que lleven ficheros del agente o borradores (`CLAUDE.md`, `AGENTS.md`, `.mcp.json`, `.claude/`, `.craft/`), `git add -A`/`.`, `--no-verify` y `push --force` a la rama principal; pide confirmación en todo push, PR o fusión. Excepción por repo: `git config craft.subirAgente true`. Comprobación: `node git-guarda.mjs --test`. Ver `references/equipo-y-git.md` |
 | `git-ignore-global` | Se añade a `~/.config/git/ignore`: lo mismo queda fuera de `git status` en cualquier repo sin tocar su `.gitignore` |
@@ -90,11 +91,6 @@ Si la ruta no coincide con la versión instalada, consulta la documentación del
 ## Paso 2. Plugins (Claude Code)
 
 ```bash
-claude plugin marketplace add JuliusBrussee/caveman
-claude plugin marketplace add DietrichGebert/ponytail
-claude plugin install superpowers@claude-plugins-official
-claude plugin install caveman@caveman
-claude plugin install ponytail@ponytail
 claude plugin install security-guidance@claude-plugins-official
 claude plugin install frontend-design@claude-plugins-official
 ```
@@ -112,13 +108,10 @@ Cada skill visible cuesta contexto en todos los mensajes, se use o no. Las que s
 
 | Plugin | Qué aporta | Hooks / red |
 |---|---|---|
-| superpowers | Método: brainstorming, planes, TDD, depuración sistemática, revisión | Hook al arrancar sesión |
-| caveman | Respuestas telegráficas, menos tokens | Hooks al arrancar y en cada mensaje (necesita `node`) |
-| ponytail | Construir lo mínimo (la escalera de `preferencias.md`) | Hooks al arrancar y en cada mensaje (necesita `node`) |
 | security-guidance | Avisos de seguridad al editar | Hook en edición |
 | frontend-design | Diseño de interfaces con criterio | No |
 
-**Otros agentes:** superpowers tiene instalación para Codex, opencode y otros (sigue su README en `github.com/obra/superpowers`). Caveman y ponytail no hacen falta fuera de Claude Code: sus reglas ya están en `preferencias.md`.
+**Sin superpowers, caveman ni ponytail** (quitados el 20/11/2026): sumaban 91 skills y 9 agentes a cada petición y se usaban muy poco. Su método ya está en craft y su estilo en `preferencias.md` («Idioma y forma» y la escalera de lo mínimo).
 
 ## Paso 3. Ajustes (Claude Code)
 
@@ -136,7 +129,7 @@ npx skills add anthropics/skills --skill frontend-design -g
 npx skills add pbakaus/impeccable -g
 ```
 
-Skills de ingeniería de terceros, con descripción completa (sin `skillOverrides`) para que el agente las cargue solo cuando la tarea lo pide:
+Skills de ingeniería de terceros, en `skillOverrides` como `"name-only"` (ya en `claude-settings.json`): el agente sabe cuándo invocarlas por el mapa `skills-por-tarea.md`, que el hook de craft carga al abrir sesión:
 
 ```bash
 npx skills add https://github.com/cloudflare/security-audit-skill -s security-audit -g -a claude-code -y --copy
@@ -210,7 +203,7 @@ Si el escritorio ya tiene ficheros, propón a qué carpeta va cada uno y pide un
 
 ## Paso 6. Verificar e informar
 
-1. Reinicia el agente y comprueba: `claude plugin list`, `claude mcp list`, y que la sesión arranca con los hooks de caveman y ponytail sin error.
+1. Reinicia el agente y comprueba: `claude plugin list`, `claude mcp list`, y que la sesión arranca con el hook de craft sin error.
 2. Pide una tarea trivial y mira que responde en español, corto, y que un commit sale sin coautoría.
 3. Comprueba la protección de git: `node ~/.claude/skills/craft/entorno/hooks/git-guarda.mjs --test` da `ok`, y en un repositorio de prueba `git check-ignore -v .craft/x` muestra el ignorado global.
 4. Auditoría de la configuración con AgentShield, una vez y solo en modo estático (sin `--opus`, que manda datos fuera; sin `--fix` ni `--sandbox`, que tocan o ejecutan la configuración). Versión fija en una carpeta aparte: `npm i --ignore-scripts ecc-agentshield@1.6.0` y `npx agentshield scan --path <copia>`. La 1.6.0 falla con un enlace (junction) dentro de `~/.claude` (`EISDIR`): escanea una copia hecha con `cp -rL` de `settings.json`, `CLAUDE.md`, `agents/` y `skills/`. Casi todo lo que marca es la plantilla "Missing prompt defense" en cada `.md`; lo que importa son los apartados `permissions`, `hooks`, `mcp` y `secrets`. Una máquina de empresa debería salir con lista `deny` (secretos, `.env`, `git push --force`) y sin `defaultMode` que salte confirmaciones.

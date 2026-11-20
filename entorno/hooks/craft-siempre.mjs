@@ -23,7 +23,10 @@ if (modo === '--test') {
   assert.ok(g.includes('# Craft\nhola') && !g.includes('name: craft') && g.includes('/x'));
   console.log('ok');
 } else if (modo === 'sesion') {
-  console.log(guia(readFileSync(join(dir, 'SKILL.md'), 'utf8'), dir));
+  // mapa tarea -> skill: con las skills en modo solo nombre, el agente sabe cuál invocar
+  let mapa = '';
+  try { mapa = '\n\n' + readFileSync(join(dir, 'entorno', 'skills-por-tarea.md'), 'utf8').trim(); } catch {}
+  console.log(guia(readFileSync(join(dir, 'SKILL.md'), 'utf8') + mapa, dir));
 } else if (modo === 'mensaje') {
   console.log(RECORDATORIO);
 }

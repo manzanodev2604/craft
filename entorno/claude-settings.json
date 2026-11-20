@@ -13,24 +13,8 @@
     "type": "command",
     "command": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"~/.claude/statusline.ps1\""
   },
-  "extraKnownMarketplaces": {
-    "caveman": {
-      "source": {
-        "source": "github",
-        "repo": "JuliusBrussee/caveman"
-      }
-    },
-    "ponytail": {
-      "source": {
-        "source": "github",
-        "repo": "DietrichGebert/ponytail"
-      }
-    }
-  },
+  "extraKnownMarketplaces": {},
   "enabledPlugins": {
-    "superpowers@claude-plugins-official": true,
-    "caveman@caveman": true,
-    "ponytail@ponytail": true,
     "security-guidance@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
     "prompt-mejorado@craft-mods": true
@@ -93,7 +77,12 @@
   "skillOverrides": {
     "frontend-design": "off",
     "craft": "user-invocable-only",
-    "llm-council": "name-only"
+    "llm-council": "name-only",
+    "api-and-interface-design": "name-only",
+    "observability-and-instrumentation": "name-only",
+    "impeccable": "name-only",
+    "trabajo-diario": "name-only",
+    "security-audit": "name-only"
   },
   "modelSettings": {
     "claude-opus-5-5": {
