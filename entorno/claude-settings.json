@@ -25,6 +25,15 @@
         "hooks": [
           {
             "type": "command",
+            "command": "node \"$HOME/.claude/skills/craft/entorno/hooks/seguridad.mjs\" mensaje",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
             "command": "node \"$HOME/.claude/skills/craft/entorno/hooks/titulo-sesion.mjs\"",
             "timeout": 5
           }
@@ -65,6 +74,11 @@
       {
         "matcher": "Bash|PowerShell",
         "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/skills/craft/entorno/hooks/seguridad.mjs\"",
+            "timeout": 5
+          },
           {
             "type": "command",
             "command": "node \"$HOME/.claude/skills/craft/entorno/hooks/git-guarda.mjs\"",
