@@ -17,7 +17,7 @@ export function guia(texto, ruta) {
 
 const RECORDATORIO = 'craft activa: si este mensaje es trabajo sobre código o datos, sigue su ciclo y sus paradas.';
 
-const modo = process.argv[2];
+const modo = process.env.CRAFT_APUNTES ? '' : process.argv[2]; // apuntes-sesion.mjs: claude -p sin guía
 if (modo === '--test') {
   const g = guia('---\nname: craft\n---\n\n# Craft\nhola', '/x');
   assert.ok(g.includes('# Craft\nhola') && !g.includes('name: craft') && g.includes('/x'));
@@ -28,5 +28,12 @@ if (modo === '--test') {
   try { mapa = '\n\n' + readFileSync(join(dir, 'entorno', 'skills-por-tarea.md'), 'utf8').trim(); } catch {}
   console.log(guia(readFileSync(join(dir, 'SKILL.md'), 'utf8') + mapa, dir));
 } else if (modo === 'mensaje') {
-  console.log(RECORDATORIO);
+  const hoy = new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  console.log(`Hoy es ${hoy}. ${RECORDATORIO}`);
+} else if (modo === 'escrito') {
+  // PostToolUse Write|Edit: raya larga en un texto para personas
+  const e = JSON.parse(readFileSync(0, 'utf8') || '{}'), i = e.tool_input || {};
+  const texto = String(i.content ?? i.new_string ?? '');
+  if (/\.(md|mdx|txt|html?|rst|tex)$/i.test(i.file_path || '') && texto.includes('—'))
+    console.log(JSON.stringify({ hookSpecificOutput: { hookEventName: 'PostToolUse', additionalContext: `craft: ${i.file_path} lleva raya larga (—). El usuario no la usa: cámbiala por coma, dos puntos, paréntesis o punto.` } }));
 }

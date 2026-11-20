@@ -28,6 +28,7 @@ Sigue estos cinco pasos en orden, también en cambios pequeños.
    1. Escribe las pruebas desde la especificación **antes** que el código y míralas fallar. Por qué: una prueba escrita después de ver el código repite sus mismos errores.
    2. Una unidad cada vez, terminada y en verde antes de la siguiente; un commit por unidad si las normas lo permiten.
    3. Cambio incremental sobre lo que existe; no reescribas sin una razón y sin permiso.
+   4. Cuando entregues una primera versión que el usuario va a iterar (texto, mensaje, prompt, función), copia esa versión a `.craft/congelado/<misma ruta>` antes de que la cambie. Al cerrar la sesión, el hook `apuntes-sesion.mjs` compara congelado y final y propone reglas en `.craft/sesiones/`. Por qué: lo que el usuario corrige siempre es lo que el agente debe aprender, y sin la primera versión no se ve.
 4. **Verificar con evidencia.**
    1. Ejecuta las comprobaciones ahora y lee la salida; lo que pasó antes no cuenta.
    2. Compara con algo que no salga del mismo paso: valores calculados a mano, la versión anterior u otra implementación.

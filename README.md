@@ -28,7 +28,7 @@ Skill de método de trabajo para agentes de código: normas del repositorio prim
    > Prepara mi entorno siguiendo `~/.claude/skills/craft/entorno/LEEME.md`.
 
    El agente lee la política de la empresa, detecta qué agente hay (Claude Code, Codex, Cursor, Copilot, opencode, Gemini CLI), te enseña la lista de lo que va a instalar y, con tu sí, instala programas, identidad de git, preferencias, plugins, skills, servidores MCP, hooks y ajustes. Al final reinicia, comprueba e informa de lo que no pudo hacer.
-5. **Reinicia el agente.** Desde ese momento, en Claude Code craft se carga sola en cada sesión (hook `craft-siempre.mjs`) el hook `git-guarda.mjs` impide subir ficheros del agente o borradores, y `seguridad.mjs` impide borrar fuera del proyecto sin confirmar, cerrar el navegador y escribir secretos en comandos o en el chat. No hace falta activarla en cada proyecto.
+5. **Reinicia el agente.** Desde ese momento, en Claude Code craft se carga sola en cada sesión (hook `craft-siempre.mjs`), el hook `git-guarda.mjs` impide subir ficheros del agente o borradores, y `seguridad.mjs` impide borrar fuera del proyecto sin confirmar, cerrar el navegador y escribir secretos en comandos o en el chat, y `apuntes-sesion.mjs` deja al cerrar cada sesión con cambios unos apuntes en `.craft/sesiones/`. No hace falta activarla en cada proyecto.
 
 ## En otros agentes
 

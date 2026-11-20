@@ -86,6 +86,29 @@
           }
         ]
       }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/skills/craft/entorno/hooks/apuntes-sesion.mjs\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/skills/craft/entorno/hooks/craft-siempre.mjs\" escrito",
+            "timeout": 5
+          }
+        ]
+      }
     ]
   },
   "skillOverrides": {

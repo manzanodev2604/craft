@@ -36,7 +36,7 @@ Cuando aprueba algo grande ("procede con todo"), se hace completo, no a medias.
 ## Preguntar antes
 
 - Publicar o desplegar algo que cambie producción, salvo que ya lo autorizara en esa tarea.
-- Enviar mensajes, correos o publicaciones en su nombre: se prepara el texto y lo envía él.
+- Enviar mensajes, correos o publicaciones en su nombre: borrador primero y su visto bueno a ese texto; después lo envía el agente, sin volver a parar. Mensajes cortos, en su voz, sin emoticonos ni exclamaciones, solo lo preguntado y sin inventar.
 - Borrar lo que no es claramente basura, reescribir historia de git, fusionar a una rama que despliega.
 - Cualquier gasto: decir cuánto cuesta y si hay alternativa gratuita.
 

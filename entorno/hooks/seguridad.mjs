@@ -11,6 +11,7 @@ import { readFileSync } from 'node:fs';
 import { homedir, tmpdir } from 'node:os';
 import path from 'node:path';
 import assert from 'node:assert/strict';
+import { fileURLToPath } from 'node:url';
 
 const SECRETOS = [
   [/x-access-token:(?!\$)[^@\s"']{8,}@/, 'token en una URL de git (x-access-token:)'],
@@ -25,6 +26,7 @@ const SECRETOS = [
   [/-----BEGIN [A-Z ]*PRIVATE KEY-----/, 'clave privada'],
 ];
 export const buscaSecreto = txt => SECRETOS.find(([re]) => re.test(txt))?.[1] ?? null;
+export const tapaSecretos = txt => SECRETOS.reduce((t, [re]) => t.replace(new RegExp(re.source, 'g'), '[SECRETO]'), txt);
 
 const NAVEGADOR = /\b(brave|chrome|msedge|firefox)(\.exe)?\b/i;
 const MATAR = /\b(taskkill|Stop-Process|spps|kill|pkill|killall|wmic)\b/i;
@@ -91,7 +93,9 @@ export function decide(cmd, cwd, proyecto) {
   return null;
 }
 
-const modo = process.argv[2];
+// solo como programa: apuntes-sesion.mjs lo importa y no debe leer su stdin
+const principal = process.argv[1] && path.resolve(process.argv[1]) === path.resolve(fileURLToPath(import.meta.url));
+const modo = principal ? process.argv[2] ?? 'hook' : null;
 if (modo === '--test') {
   const H = homedir(), P = path.join(H, 'Desktop', 'proy');
   const d = (c, cwd = P) => decide(c, cwd, P)?.[0] ?? null;
@@ -130,12 +134,13 @@ if (modo === '--test') {
   assert.equal(d('grep -rn "github_pat_" .'), null);
   assert.equal(d('git clone https://github.com/a/b.git'), null);
   assert.ok(buscaSecreto('mi token es ghp_' + 'a'.repeat(36)) && !buscaSecreto('usa sk-ant- como prefijo'));
+  assert.equal(tapaSecretos(`a ghp_${'a'.repeat(36)} b ghp_${'b'.repeat(36)}`), 'a [SECRETO] b [SECRETO]');
   console.log('ok');
-} else if (modo === 'mensaje') {
+} else if (modo === 'mensaje' && !process.env.CRAFT_APUNTES) { // apuntes-sesion.mjs ya tapa los secretos
   const e = JSON.parse(readFileSync(0, 'utf8') || '{}');
   const s = buscaSecreto(String(e.prompt ?? ''));
   if (s) console.log(JSON.stringify({ decision: 'block', reason: `craft: el mensaje lleva un secreto (${s}) y no se ha enviado. Guárdalo en una variable de entorno o en el gestor de credenciales y vuelve a escribir el mensaje sin él. Si ya lo has pegado en otro sitio, revócalo.` }));
-} else {
+} else if (modo === 'hook') {
   const e = JSON.parse(readFileSync(0, 'utf8') || '{}');
   const cwd = e.cwd || process.cwd();
   const d = decide(String(e.tool_input?.command ?? ''), cwd, process.env.CLAUDE_PROJECT_DIR || cwd);
