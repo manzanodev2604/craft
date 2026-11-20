@@ -11,22 +11,8 @@ import { readFileSync } from 'node:fs';
 import { homedir, tmpdir } from 'node:os';
 import path from 'node:path';
 import assert from 'node:assert/strict';
-import { fileURLToPath } from 'node:url';
 
-const SECRETOS = [
-  [/x-access-token:(?!\$)[^@\s"']{8,}@/, 'token en una URL de git (x-access-token:)'],
-  [/https?:\/\/[^\s/:@"']+:(?!\$)[^\s/@"']{8,}@/, 'usuario y clave en una URL'],
-  [/\bgithub_pat_[A-Za-z0-9_]{20,}/, 'token de GitHub (github_pat_)'],
-  [/\bgh[pousr]_[A-Za-z0-9]{30,}/, 'token de GitHub (ghp_/gho_/ghs_...)'],
-  [/\bsk-ant-[A-Za-z0-9_-]{20,}/, 'clave de API de Anthropic'],
-  [/\bsk-(?:proj-)?[A-Za-z0-9_-]{32,}/, 'clave de API (sk-...)'],
-  [/\bAKIA[0-9A-Z]{16}\b/, 'clave de acceso de AWS'],
-  [/\bxox[abposr]-[A-Za-z0-9-]{10,}/, 'token de Slack'],
-  [/\bAIza[0-9A-Za-z_-]{35}\b/, 'clave de API de Google'],
-  [/-----BEGIN [A-Z ]*PRIVATE KEY-----/, 'clave privada'],
-];
-export const buscaSecreto = txt => SECRETOS.find(([re]) => re.test(txt))?.[1] ?? null;
-export const tapaSecretos = txt => SECRETOS.reduce((t, [re]) => t.replace(new RegExp(re.source, 'g'), '[SECRETO]'), txt);
+import { buscaSecreto, tapaSecretos } from './secretos.mjs';
 
 const NAVEGADOR = /\b(brave|chrome|msedge|firefox)(\.exe)?\b/i;
 const MATAR = /\b(taskkill|Stop-Process|spps|kill|pkill|killall|wmic)\b/i;
@@ -93,9 +79,7 @@ export function decide(cmd, cwd, proyecto) {
   return null;
 }
 
-// solo como programa: apuntes-sesion.mjs lo importa y no debe leer su stdin
-const principal = process.argv[1] && path.resolve(process.argv[1]) === path.resolve(fileURLToPath(import.meta.url));
-const modo = principal ? process.argv[2] ?? 'hook' : null;
+const modo = process.argv[2];
 if (modo === '--test') {
   const H = homedir(), P = path.join(H, 'Desktop', 'proy');
   const d = (c, cwd = P) => decide(c, cwd, P)?.[0] ?? null;
@@ -136,11 +120,12 @@ if (modo === '--test') {
   assert.ok(buscaSecreto('mi token es ghp_' + 'a'.repeat(36)) && !buscaSecreto('usa sk-ant- como prefijo'));
   assert.equal(tapaSecretos(`a ghp_${'a'.repeat(36)} b ghp_${'b'.repeat(36)}`), 'a [SECRETO] b [SECRETO]');
   console.log('ok');
-} else if (modo === 'mensaje' && !process.env.CRAFT_APUNTES) { // apuntes-sesion.mjs ya tapa los secretos
+} else if (modo === 'mensaje') {
+  if (process.env.CRAFT_APUNTES) process.exit(0); // apuntes-sesion.mjs ya tapa los secretos
   const e = JSON.parse(readFileSync(0, 'utf8') || '{}');
   const s = buscaSecreto(String(e.prompt ?? ''));
   if (s) console.log(JSON.stringify({ decision: 'block', reason: `craft: el mensaje lleva un secreto (${s}) y no se ha enviado. Guárdalo en una variable de entorno o en el gestor de credenciales y vuelve a escribir el mensaje sin él. Si ya lo has pegado en otro sitio, revócalo.` }));
-} else if (modo === 'hook') {
+} else {
   const e = JSON.parse(readFileSync(0, 'utf8') || '{}');
   const cwd = e.cwd || process.cwd();
   const d = decide(String(e.tool_input?.command ?? ''), cwd, process.env.CLAUDE_PROJECT_DIR || cwd);

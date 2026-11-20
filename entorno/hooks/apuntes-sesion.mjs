@@ -12,7 +12,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import assert from 'node:assert/strict';
-import { tapaSecretos } from './seguridad.mjs';
+import { tapaSecretos } from './secretos.mjs';
 
 const LOG = path.join(tmpdir(), 'craft-apuntes.log');
 const log = m => { try { appendFileSync(LOG, `${new Date().toISOString()} ${m}\n`); } catch {} };
