@@ -117,7 +117,7 @@ Cada skill visible cuesta contexto en todos los mensajes, se use o no. Las que s
 
 ## Paso 3. Ajustes (Claude Code)
 
-1. Fusiona `claude-settings.json` con `~/.claude/settings.json`: las claves del fichero ganan, las demás se conservan. No copies permisos ni modos que salten confirmaciones; en una máquina de empresa los decide el usuario.
+1. Fusiona `claude-settings.json` con `~/.claude/settings.json`: las claves del fichero ganan, las demás se conservan. No copies permisos ni modos que salten confirmaciones; en una máquina de empresa los decide el usuario. La lista `deny` de la plantilla sí se fusiona (sumando, sin quitar las que haya): impide al agente leer claves SSH y credenciales de AWS, `gh`, git y Claude Code con sus herramientas de ficheros. Un `cat` por la terminal no lo para.
 2. Ignorado global de git: `mkdir -p ~/.config/git && cat entorno/git-ignore-global >> ~/.config/git/ignore` (si `git config --global core.excludesFile` apunta a otro fichero, añádelo a ese). Comprueba con `git check-ignore -v .craft/x` dentro de cualquier repo.
 3. El hook de título, `git-guarda` y `seguridad` ya van en `claude-settings.json` y apuntan a la skill instalada en `~/.claude/skills/craft`; si la skill está en otra ruta, ajusta las rutas de `hooks`.
 4. Copia `statusline.ps1` a `~/.claude/statusline.ps1` y pon en `statusLine.command` la **ruta absoluta** (Windows no expande `~` ahí). Sin `pwsh`, quita `statusLine`.
